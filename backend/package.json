@@ -1,30 +1,22 @@
 {
-  "name": "backend",
+  "name": "aau-club-backend",
   "version": "1.0.0",
-  "main": "index.js",
+  "description": "AAU Club Management System Backend API",
+  "main": "src/server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "seed": "node src/utils/seed.js",
+    "prisma:generate": "npx prisma generate",
+    "prisma:push": "npx prisma db push",
+    "prisma:studio": "npx prisma studio",
+    "setup": "npx prisma generate && npx prisma db push && node src/utils/seed.js"
   },
-  "keywords": [],
+  "keywords": [
+    "aau",
+    "club",
+    "management"
+  ],
   "author": "",
-  "license": "ISC",
-  "description": "",
-  "dependencies": {
-    "@prisma/client": "^7.3.0",
-    "bcryptjs": "^3.0.3",
-    "cookie-parser": "^1.4.7",
-    "cors": "^2.8.6",
-    "dotenv": "^17.2.4",
-    "express": "^5.2.1",
-    "express-rate-limit": "^8.2.1",
-    "helmet": "^8.1.0",
-    "jsonwebtoken": "^9.0.3",
-    "multer": "^2.0.2",
-    "nodemailer": "^8.0.1",
-    "prisma": "^7.3.0",
-    "zod": "^4.3.6"
-  },
-  "devDependencies": {
-    "nodemon": "^3.1.11"
-  }
+  "license": "ISC"
 }
