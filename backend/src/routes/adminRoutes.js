@@ -6,7 +6,7 @@ const { authenticate, authorize } = require('../middleware/auth');
 router.use(authenticate);
 router.use(authorize('ADMIN'));
 
-router.get('/dashboard', getDashboardStats);
+router.get('/admin-dashboard', getDashboardStats);
 router.get('/activity', getActivityLog);
 
 module.exports = router;

@@ -9,7 +9,7 @@ const seed = async () => {
         await prisma.message.deleteMany();
         await prisma.notification.deleteMany();
         await prisma.announcement.deleteMany();
-        await prisma.rsvp.deleteMany();
+        await prisma.rSVP.deleteMany();
         await prisma.event.deleteMany();
         await prisma.membership.deleteMany();
         await prisma.club.deleteMany();
@@ -17,7 +17,7 @@ const seed = async () => {
 
         const hashedPassword = await bcrypt.hash('Password123', 12);
 
-        // Create Admin
+        // Create primary Admin
         const admin = await prisma.user.create({
             data: {
                 email: 'admin@aau.edu.et',
@@ -27,6 +27,19 @@ const seed = async () => {
                 studentId: 'ADM001',
                 role: 'ADMIN',
                 bio: 'System Administrator of AAU Club Management System',
+            },
+        });
+
+        // Create secondary Admin
+        const admin2 = await prisma.user.create({
+            data: {
+                email: 'admin2@aau.edu.et',
+                password: hashedPassword,
+                firstName: 'Assistant',
+                lastName: 'Admin',
+                studentId: 'ADM002',
+                role: 'ADMIN',
+                bio: 'Secondary administrator for AAU Club Management System',
             },
         });
 
@@ -253,7 +266,7 @@ const seed = async () => {
 
             // Add some RSVPs
             for (let i = 0; i < Math.min(3, members.length); i++) {
-                await prisma.rsvp.create({
+                await prisma.rSVP.create({
                     data: {
                         userId: members[i].id,
                         eventId: event.id,
@@ -305,7 +318,8 @@ const seed = async () => {
         }
 
         console.log('✅ Database seeded successfully!');
-        console.log(`   👑 Admin: admin@aau.edu.et / Password123`);
+        console.log(`   👑 Admin 1: admin@aau.edu.et / Password123`);
+        console.log(`   👑 Admin 2: admin2@aau.edu.et / Password123`);
         console.log(`   👤 Leader 1: abebe.kebede@aau.edu.et / Password123`);
         console.log(`   👤 Leader 2: tigist.hailu@aau.edu.et / Password123`);
         console.log(`   👤 Leader 3: dawit.mengistu@aau.edu.et / Password123`);
