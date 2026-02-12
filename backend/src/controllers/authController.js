@@ -22,7 +22,7 @@ const register = async (req, res, next) => {
                 where: { studentId: data.studentId },
             });
             if (existingStudent) {
-                throw ApiError.conflict('Student ID already registered');
+                throw ApiError.conflict('A record with this studentId already exists');
             }
         }
 

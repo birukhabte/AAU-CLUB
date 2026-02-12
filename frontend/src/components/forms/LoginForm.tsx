@@ -28,9 +28,9 @@ export function LoginForm() {
             const loggedInUser = await login(data);
             toast.success('Logged in successfully');
 
-            // Redirect based on user role from backend
+            // Redirect based on user role
             if (loggedInUser.role === 'ADMIN') {
-                router.push('/dashboard/admin');
+                router.push('/admin-dashboard');
             } else {
                 router.push('/dashboard');
             }

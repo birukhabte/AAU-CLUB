@@ -20,6 +20,7 @@ const authenticate = async (req, res, next) => {
                 firstName: true,
                 lastName: true,
                 role: true,
+                clubId: true,
                 isActive: true,
                 avatar: true,
             },

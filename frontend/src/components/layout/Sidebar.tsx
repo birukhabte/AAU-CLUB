@@ -26,18 +26,15 @@ interface SidebarItem {
 
 const items: SidebarItem[] = [
     { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-    { label: 'Clubs', href: '/clubs', icon: Layers }, // Accessible to all
+    { label: 'Clubs', href: '/clubs', icon: Layers },
     { label: 'My Clubs', href: '/dashboard/my-clubs', icon: Users, roles: ['MEMBER', 'CLUB_LEADER'] },
     { label: 'Events', href: '/dashboard/events', icon: Calendar },
     { label: 'Messages', href: '/dashboard/messages', icon: MessageSquare },
     { label: 'Notifications', href: '/dashboard/notifications', icon: Bell },
+    { label: 'Profile', href: '/dashboard/profile', icon: Settings },
 
     // Leader Only
-    { label: 'Manage Club', href: '/dashboard/leader/manage', icon: Settings, roles: ['CLUB_LEADER'] },
-
-    // Admin Only
-    { label: 'User Management', href: '/dashboard/admin/users', icon: Users, roles: ['ADMIN'] },
-    { label: 'Club Management', href: '/dashboard/admin/clubs', icon: Shield, roles: ['ADMIN'] },
+    { label: 'Manage Club', href: '/dashboard/leader/manage', icon: Shield, roles: ['CLUB_LEADER'] },
 ];
 
 export function Sidebar() {

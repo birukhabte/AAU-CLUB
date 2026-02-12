@@ -1,6 +1,7 @@
 "use client";
 
-import { Sidebar } from '@/components/layout/Sidebar';
+import LeaderSidebar from '@/components/layout/LeaderSidebar';
+import MemberSidebar from '@/components/layout/MemberSidebar';
 import { useAuth } from '@/hooks/useAuth';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
@@ -25,10 +26,20 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
     if (!user) return null;
 
+    // Render appropriate sidebar based on user role
+    const renderSidebar = () => {
+        if (user.role === 'CLUB_LEADER') {
+            return <LeaderSidebar />;
+        } else if (user.role === 'MEMBER') {
+            return <MemberSidebar />;
+        }
+        return null;
+    };
+
     return (
         <div className="flex h-screen bg-gray-50 overflow-hidden">
             <div className="hidden md:flex md:flex-shrink-0">
-                <Sidebar />
+                {renderSidebar()}
             </div>
             <div className="flex-1 flex flex-col md:pl-64 w-0 min-w-0">
                 <main className="relative flex-1 overflow-y-auto focus:outline-none bg-gray-100 p-6">

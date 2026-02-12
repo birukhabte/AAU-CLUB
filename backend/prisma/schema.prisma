@@ -17,13 +17,14 @@ model User {
   phone          String?
   avatar         String?
   bio            String?
-  role           String   @default("MEMBER") // SQLite enum support
+  role           String   @default("MEMBER") // ADMIN, CLUB_LEADER, MEMBER
+  clubId         String?  // For CLUB_LEADER role
   isActive       Boolean  @default(true)
-  refreshToken   String?
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
   // Relations
+  assignedClub   Club?            @relation("AssignedClubLeader", fields: [clubId], references: [id])
   memberships    Membership[]
   rsvps          RSVP[]
   notifications  Notification[]
@@ -32,6 +33,8 @@ model User {
   announcements  Announcement[]
   sentMessages   Message[]        @relation("MessageSender")
   receivedMessages Message[]      @relation("MessageReceiver")
+  refreshTokens  RefreshToken[]
+  activityLogs   ActivityLog[]
 
   @@map("users")
 }
@@ -43,7 +46,7 @@ model Club {
   category    String
   logo        String?
   coverImage  String?
-  status      String     @default("ACTIVE") // SQLite enum support
+  status      String     @default("ACTIVE") // ACTIVE, INACTIVE, SUSPENDED
   meetingDay  String?
   meetingTime String?
   location    String?
@@ -53,10 +56,12 @@ model Club {
 
   // Relations
   leader       User           @relation("ClubLeader", fields: [leaderId], references: [id])
+  assignedLeaders User[]      @relation("AssignedClubLeader")
   memberships  Membership[]
   events       Event[]
   announcements Announcement[]
   messages     Message[]
+  membershipRequests MembershipRequest[]
 
   @@map("clubs")
 }
@@ -65,8 +70,8 @@ model Membership {
   id        String    @id @default(cuid())
   userId    String
   clubId    String
-  status    String    @default("PENDING") // SQLite enum support
-  joinedAt  DateTime?
+  status    String    @default("APPROVED") // APPROVED, ACTIVE
+  joinedAt  DateTime  @default(now())
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 
@@ -76,6 +81,21 @@ model Membership {
 
   @@unique([userId, clubId])
   @@map("memberships")
+}
+
+model MembershipRequest {
+  id        String   @id @default(cuid())
+  userId    String
+  clubId    String
+  status    String   @default("PENDING") // PENDING, APPROVED, REJECTED
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  club Club @relation(fields: [clubId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, clubId])
+  @@map("membership_requests")
 }
 
 model Event {
@@ -166,4 +186,30 @@ model Message {
   club     Club? @relation(fields: [clubId], references: [id])
 
   @@map("messages")
+}
+
+model RefreshToken {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("refresh_tokens")
+}
+
+model ActivityLog {
+  id        String   @id @default(cuid())
+  userId    String
+  action    String
+  details   String   // JSON string for SQLite
+  timestamp DateTime @default(now())
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("activity_logs")
 }
