@@ -9,7 +9,28 @@ export default function Dashboard() {
 
     return (
         <div>
-            <h1 className="text-2xl font-bold mb-6 text-gray-800">Welcome back, {user.firstName}!</h1>
+            <h1 className="text-2xl font-bold mb-4 text-gray-800">Welcome back, {user.firstName}!</h1>
+
+            {user.role === 'ADMIN' && (
+                <div
+                    className="mb-6 bg-indigo-50 border border-indigo-100 rounded-xl p-4 text-sm text-gray-800"
+                    aria-label="Admin role capabilities"
+                >
+                    <p className="font-semibold text-indigo-900 mb-2">You are signed in as an Admin.</p>
+                    <p className="mb-2">As an admin you can:</p>
+                    <ul className="list-disc list-inside space-y-1">
+                        <li>Manage all clubs (create, update, deactivate)</li>
+                        <li>Manage users and roles</li>
+                        <li>Oversee events and announcements</li>
+                        <li>View analytics and system activity</li>
+                        <li>Access all areas of the system</li>
+                    </ul>
+                    <p className="mt-2 text-xs text-indigo-900">
+                        Use the sidebar links under <span className="font-semibold">Admin</span> to access management
+                        pages.
+                    </p>
+                </div>
+            )}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
                     <div className="flex items-center justify-between mb-4">
