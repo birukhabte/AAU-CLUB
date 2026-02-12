@@ -7,9 +7,9 @@ import api from '@/lib/axios';
 interface AuthContextType {
     user: User | null;
     isLoading: boolean;
-    login: (data: any) => Promise<void>;
+    login: (data: any) => Promise<User>;
     logout: () => void;
-    register: (data: any) => Promise<void>;
+    register: (data: any) => Promise<User>;
     updateUser: (user: User) => void;
 }
 
@@ -44,6 +44,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             localStorage.setItem('token', data.data.accessToken);
             localStorage.setItem('refreshToken', data.data.refreshToken);
             setUser(data.data.user);
+            return data.data.user;
         } finally {
             setIsLoading(false);
         }
@@ -56,6 +57,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             localStorage.setItem('token', data.data.accessToken);
             localStorage.setItem('refreshToken', data.data.refreshToken);
             setUser(data.data.user);
+            return data.data.user;
         } finally {
             setIsLoading(false);
         }
