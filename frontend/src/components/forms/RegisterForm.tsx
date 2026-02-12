@@ -25,9 +25,14 @@ export function RegisterForm() {
     const onSubmit = async (data: RegisterInput) => {
         setIsSubmitting(true);
         try {
-            await registerUser(data);
+            const createdUser = await registerUser(data);
             toast.success('Account created successfully');
-            router.push('/dashboard');
+
+            if (createdUser.role === 'ADMIN') {
+                router.push('/dashboard/admin');
+            } else {
+                router.push('/dashboard');
+            }
         } catch (error: any) {
             toast.error(error.response?.data?.message || 'Registration failed');
         } finally {
