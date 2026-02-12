@@ -25,9 +25,15 @@ export function LoginForm() {
     const onSubmit = async (data: LoginInput) => {
         setIsSubmitting(true);
         try {
-            await login(data);
+            const loggedInUser = await login(data);
             toast.success('Logged in successfully');
-            router.push('/dashboard');
+
+            // Redirect based on user role from backend
+            if (loggedInUser.role === 'ADMIN') {
+                router.push('/dashboard/admin');
+            } else {
+                router.push('/dashboard');
+            }
         } catch (error: any) {
             toast.error(error.response?.data?.message || 'Login failed');
         } finally {
