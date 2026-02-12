@@ -1,3 +1,26 @@
+# Frontend — Vercel deployment
+
+Quick steps to deploy the Next.js frontend to Vercel:
+
+- Set environment variables in your Vercel project settings (or in the dashboard for the production deployment):
+  - `NEXT_PUBLIC_API_URL` — the base URL of the backend API (e.g. `https://your-backend.vercel.app/api`)
+  - Any other `NEXT_PUBLIC_*` vars used by the app
+
+- Vercel will automatically run `npm run build` (project `package.json` has a `build` script).
+
+- If you need to run additional build steps before `next build`, add a `vercel-build` script to `package.json`.
+
+Local commands:
+```bash
+cd frontend
+npm install
+npm run build
+npm start # serves the production build locally
+```
+
+Notes:
+- The frontend expects `NEXT_PUBLIC_API_URL` to point to the backend API.
+- Keep any sensitive secrets (JWT secret, DB connection strings) in the backend; only expose public endpoints to the frontend.
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started

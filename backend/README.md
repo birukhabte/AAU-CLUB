@@ -14,11 +14,13 @@ Quick steps to deploy the backend on Vercel:
 - The project uses an API function entry at `/api/index.js` which adapts the Express app via `serverless-http`.
 
 Prisma and serverless notes:
+
 - Prisma opens DB connections per run; for serverless platforms consider:
   - using Prisma Data Proxy, or
   - connection pooling (PgBouncer) for PostgreSQL
 
 Local test commands (from `backend`):
+
 ```bash
 npm run prisma:generate
 npm start
