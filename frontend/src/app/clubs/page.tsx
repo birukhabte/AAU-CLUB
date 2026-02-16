@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { Search, Users, Calendar, MapPin, Loader2 } from 'lucide-react';
+import { Search, Users, Calendar, MapPin, Loader2, ArrowLeft } from 'lucide-react';
 import api from '@/lib/axios';
 import { useAuth } from '@/hooks/useAuth';
+import { useRouter } from 'next/navigation';
 
 interface Club {
   id: string;
@@ -29,6 +30,7 @@ interface Membership {
 
 export default function ClubsDirectoryPage() {
   const { user } = useAuth();
+  const router = useRouter(); // Initialize router
   const [clubs, setClubs] = useState<Club[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -180,6 +182,14 @@ export default function ClubsDirectoryPage() {
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
+      <button
+        onClick={() => router.back()}
+        className="flex items-center text-gray-600 hover:text-gray-900 mb-6 transition-colors"
+      >
+        <ArrowLeft className="h-5 w-5 mr-2" />
+        Back
+      </button>
+
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-gray-800">Browse Clubs</h1>
         <div className="flex gap-3">
