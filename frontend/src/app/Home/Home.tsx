@@ -1,3 +1,5 @@
+"use client";
+
 import React from 'react';
 import {
     Users, Calendar, Trophy, Globe, ArrowRight,
