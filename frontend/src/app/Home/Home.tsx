@@ -45,7 +45,7 @@ const HomePage: React.FC = () => {
                         <div className="hidden md:flex items-center space-x-8">
                             <a href="#" className="text-gray-600 hover:text-blue-600">Home</a>
                             <a href="#featured-clubs" className="text-gray-600 hover:text-blue-600">Clubs</a>
-                            <a href="#" className="text-gray-600 hover:text-blue-600">Events</a>
+                            <a href="#upcoming-events" className="text-gray-600 hover:text-blue-600">Events</a>
                             <a href="#" className="text-gray-600 hover:text-blue-600">About</a>
                             <Link href="/login" className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
                                 Sign In
@@ -71,7 +71,7 @@ const HomePage: React.FC = () => {
                         <div className="px-2 pt-2 pb-3 space-y-1">
                             <a href="#" className="block px-3 py-2 text-gray-600 hover:bg-gray-50">Home</a>
                             <a href="#featured-clubs" className="block px-3 py-2 text-gray-600 hover:bg-gray-50">Clubs</a>
-                            <a href="#" className="block px-3 py-2 text-gray-600 hover:bg-gray-50">Events</a>
+                            <a href="#upcoming-events" className="block px-3 py-2 text-gray-600 hover:bg-gray-50">Events</a>
                             <a href="#" className="block px-3 py-2 text-gray-600 hover:bg-gray-50">About</a>
                             <div className="pt-4 space-y-2">
                                 <Link href="/login" className="block w-full text-center px-4 py-2 bg-blue-600 text-white rounded-lg">Sign In</Link>
@@ -177,7 +177,7 @@ const HomePage: React.FC = () => {
             </section>
 
             {/* Upcoming Events */}
-            <section className="py-16 bg-white">
+            <section id="upcoming-events" className="py-16 bg-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between items-center mb-8">
                         <div>
