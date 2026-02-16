@@ -47,9 +47,13 @@ const register = async (req, res, next) => {
         const accessToken = generateAccessToken(user);
         const refreshToken = generateRefreshToken(user);
 
-        await prisma.user.update({
-            where: { id: user.id },
-            data: { refreshToken },
+        // Save refresh token
+        await prisma.refreshToken.create({
+            data: {
+                userId: user.id,
+                token: refreshToken,
+                expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
+            },
         });
 
         res.status(201).json({
@@ -91,9 +95,15 @@ const login = async (req, res, next) => {
         const accessToken = generateAccessToken(user);
         const refreshToken = generateRefreshToken(user);
 
-        await prisma.user.update({
-            where: { id: user.id },
-            data: { refreshToken },
+        // Save refresh token
+        // First delete any existing tokens for this user to keep it clean (optional, or allow multiple devices)
+        // For now let's just create a new one, allowing multiple devices
+        await prisma.refreshToken.create({
+            data: {
+                userId: user.id,
+                token: refreshToken,
+                expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
+            },
         });
 
         const { password, ...userWithoutPassword } = user;
@@ -122,20 +132,33 @@ const refreshTokenHandler = async (req, res, next) => {
 
         const decoded = verifyRefreshToken(refreshToken);
 
-        const user = await prisma.user.findUnique({
-            where: { id: decoded.id },
+        // Check if token exists in DB
+        const savedToken = await prisma.refreshToken.findUnique({
+            where: { token: refreshToken },
+            include: { user: true },
         });
 
-        if (!user || user.refreshToken !== refreshToken) {
+        if (!savedToken || savedToken.userId !== decoded.id) {
             throw ApiError.unauthorized('Invalid refresh token');
         }
 
+        // Check if expired (DB check in addition to JWT check)
+        if (savedToken.expiresAt < new Date()) {
+            await prisma.refreshToken.delete({ where: { id: savedToken.id } });
+            throw ApiError.unauthorized('Refresh token expired');
+        }
+
+        const user = savedToken.user;
         const newAccessToken = generateAccessToken(user);
         const newRefreshToken = generateRefreshToken(user);
 
-        await prisma.user.update({
-            where: { id: user.id },
-            data: { refreshToken: newRefreshToken },
+        // Rotate token
+        await prisma.refreshToken.update({
+            where: { id: savedToken.id },
+            data: {
+                token: newRefreshToken,
+                expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+            },
         });
 
         res.json({
@@ -153,16 +176,32 @@ const refreshTokenHandler = async (req, res, next) => {
 // Logout
 const logout = async (req, res, next) => {
     try {
-        await prisma.user.update({
-            where: { id: req.user.id },
-            data: { refreshToken: null },
-        });
+        const { refreshToken } = req.body;
+
+        if (refreshToken) {
+            await prisma.refreshToken.deleteMany({
+                where: { token: refreshToken }, // Or delete all for user: { userId: req.user.id }
+            });
+        } else {
+            // Fallback: delete all tokens for this user if no specific token provided 
+            // (though ideally we should require the token to invalidate)
+            await prisma.refreshToken.deleteMany({
+                where: { userId: req.user.id },
+            });
+        }
 
         res.json({
             success: true,
             message: 'Logged out successfully',
         });
     } catch (error) {
+        // If token not found, it's already logged out effectively
+        if (error.code === 'P2025') {
+            return res.json({
+                success: true,
+                message: 'Logged out successfully',
+            });
+        }
         next(error);
     }
 };
