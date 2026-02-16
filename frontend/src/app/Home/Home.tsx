@@ -1,6 +1,7 @@
 "use client";
 
 import React from 'react';
+import Link from 'next/link';
 import {
     Users, Calendar, Trophy, Globe, ArrowRight,
     Sparkles, BookOpen, Heart, Zap, Menu, X
@@ -46,12 +47,12 @@ const HomePage: React.FC = () => {
                             <a href="#" className="text-gray-600 hover:text-blue-600">Clubs</a>
                             <a href="#" className="text-gray-600 hover:text-blue-600">Events</a>
                             <a href="#" className="text-gray-600 hover:text-blue-600">About</a>
-                            <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                            <Link href="/login" className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
                                 Sign In
-                            </button>
-                            <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+                            </Link>
+                            <Link href="/register" className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
                                 Register
-                            </button>
+                            </Link>
                         </div>
 
                         {/* Mobile Menu Button */}
@@ -73,8 +74,8 @@ const HomePage: React.FC = () => {
                             <a href="#" className="block px-3 py-2 text-gray-600 hover:bg-gray-50">Events</a>
                             <a href="#" className="block px-3 py-2 text-gray-600 hover:bg-gray-50">About</a>
                             <div className="pt-4 space-y-2">
-                                <button className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg">Sign In</button>
-                                <button className="w-full px-4 py-2 border border-gray-300 rounded-lg">Register</button>
+                                <Link href="/login" className="block w-full text-center px-4 py-2 bg-blue-600 text-white rounded-lg">Sign In</Link>
+                                <Link href="/register" className="block w-full text-center px-4 py-2 border border-gray-300 rounded-lg">Register</Link>
                             </div>
                         </div>
                     </div>
@@ -93,9 +94,9 @@ const HomePage: React.FC = () => {
                                 Join clubs, connect with like-minded students, and make the most of your university life.
                             </p>
                             <div className="flex flex-wrap gap-4">
-                                <button className="px-8 py-3 bg-white text-blue-600 rounded-lg font-semibold hover:bg-gray-100 flex items-center">
+                                <Link href="/clubs" className="px-8 py-3 bg-white text-blue-600 rounded-lg font-semibold hover:bg-gray-100 flex items-center">
                                     Explore Clubs <ArrowRight className="ml-2 h-5 w-5" />
-                                </button>
+                                </Link>
                                 <button className="px-8 py-3 border-2 border-white text-white rounded-lg font-semibold hover:bg-white/10">
                                     Learn More
                                 </button>
