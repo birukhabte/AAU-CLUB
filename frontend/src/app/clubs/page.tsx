@@ -1,43 +1,182 @@
 "use client";
 
-import React, { useState } from 'react';
-import { Search, Users, Calendar, MapPin } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Search, Users, Calendar, MapPin, Loader2 } from 'lucide-react';
+import api from '@/lib/axios';
+import { useAuth } from '@/hooks/useAuth';
 
 interface Club {
   id: string;
   name: string;
   category: string;
-  members: number;
+  _count?: {
+    memberships: number;
+  };
+  members?: number; // fallback or mapped
   description: string;
-  meetingDay: string;
-  location: string;
+  meetingDay: string | null;
+  location: string | null;
+  // UI state derived from memberships
   isJoined: boolean;
+  membershipStatus: 'PENDING' | 'APPROVED' | 'REJECTED' | null;
+}
+
+interface Membership {
+  id: string;
+  clubId: string;
+  status: 'PENDING' | 'APPROVED' | 'REJECTED';
 }
 
 export default function ClubsDirectoryPage() {
+  const { user } = useAuth();
+  const [clubs, setClubs] = useState<Club[]>([]);
+  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
-  
-  const clubs: Club[] = [
-    { id: '1', name: 'Robotics Club', category: 'Technology', members: 45, description: 'Build and program robots', meetingDay: 'Tuesdays', location: 'Engineering Bldg', isJoined: false },
-    { id: '2', name: 'Basketball Team', category: 'Sports', members: 28, description: 'Competitive basketball', meetingDay: 'Mon & Wed', location: 'Sports Complex', isJoined: true },
-    { id: '3', name: 'Debate Society', category: 'Academic', members: 35, description: 'Public speaking & debates', meetingDay: 'Thursdays', location: 'Liberal Arts', isJoined: false },
-    { id: '4', name: 'Chess Club', category: 'Games', members: 22, description: 'Strategic chess matches', meetingDay: 'Fridays', location: 'Student Union', isJoined: false },
-  ];
+  const [categories, setCategories] = useState<string[]>(['All']);
+  const [actionLoading, setActionLoading] = useState<string | null>(null);
 
-  const categories = ['All', 'Technology', 'Sports', 'Academic', 'Arts', 'Games'];
-  
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const [clubsRes, membershipsRes, categoriesRes] = await Promise.all([
+        api.get('/clubs'),
+        user ? api.get('/memberships/my-memberships') : Promise.resolve({ data: { data: [] } }),
+        api.get('/clubs/categories')
+      ]);
+
+      const fetchedClubs = clubsRes.data.data;
+      const myMemberships = membershipsRes.data.data as Membership[];
+      const fetchedCategories = ['All', ...categoriesRes.data.data];
+
+      // Map memberships for easy lookup
+      const membershipMap = new Map<string, string>();
+      myMemberships.forEach(m => {
+        membershipMap.set(m.clubId, m.status);
+      });
+
+      // Merge data
+      const processedClubs = fetchedClubs.map((club: any) => ({
+        ...club,
+        members: club._count?.memberships || 0,
+        isJoined: membershipMap.has(club.id) && membershipMap.get(club.id) === 'APPROVED',
+        membershipStatus: membershipMap.get(club.id) || null
+      }));
+
+      setClubs(processedClubs);
+      setCategories(fetchedCategories);
+    } catch (error) {
+      console.error("Failed to fetch data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleJoinClub = async (clubId: string) => {
+    if (!user) {
+      alert("Please login to join a club");
+      return;
+    }
+    try {
+      setActionLoading(clubId);
+      await api.post(`/memberships/join/${clubId}`);
+
+      // Update local state
+      setClubs(prev => prev.map(club => {
+        if (club.id === clubId) {
+          return { ...club, membershipStatus: 'PENDING' };
+        }
+        return club;
+      }));
+    } catch (error) {
+      console.error("Failed to join club:", error);
+      alert("Failed to join club. Please try again.");
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const handleLeaveClub = async (clubId: string) => {
+    if (!confirm("Are you sure you want to leave this club?")) return;
+
+    try {
+      setActionLoading(clubId);
+      await api.delete(`/memberships/leave/${clubId}`);
+
+      // Update local state
+      setClubs(prev => prev.map(club => {
+        if (club.id === clubId) {
+          return { ...club, isJoined: false, membershipStatus: null };
+        }
+        return club;
+      }));
+    } catch (error: any) {
+      console.error("Failed to leave club:", error);
+      alert(error.response?.data?.message || "Failed to leave club");
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
   const filteredClubs = clubs.filter(club => {
     const matchesSearch = club.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         club.description.toLowerCase().includes(searchTerm.toLowerCase());
+      (club.description && club.description.toLowerCase().includes(searchTerm.toLowerCase()));
     const matchesCategory = selectedCategory === 'All' || club.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
 
-  const toggleJoin = (clubId: string) => {
-    // Handle join/leave logic here
-    console.log(`Toggling club ${clubId}`);
+  const getButtonState = (club: Club) => {
+    if (actionLoading === club.id) {
+      return (
+        <button disabled className="w-full py-2 px-4 rounded-lg font-medium bg-gray-100 text-gray-400 flex justify-center items-center">
+          <Loader2 className="h-4 w-4 animate-spin" />
+        </button>
+      );
+    }
+
+    if (club.membershipStatus === 'APPROVED') {
+      return (
+        <button
+          onClick={() => handleLeaveClub(club.id)}
+          className="w-full py-2 px-4 rounded-lg font-medium transition-colors bg-red-50 text-red-600 hover:bg-red-100"
+        >
+          Leave Club
+        </button>
+      );
+    }
+
+    if (club.membershipStatus === 'PENDING') {
+      return (
+        <button
+          disabled
+          className="w-full py-2 px-4 rounded-lg font-medium transition-colors bg-orange-100 text-orange-800 cursor-not-allowed"
+        >
+          Request Pending
+        </button>
+      );
+    }
+
+    return (
+      <button
+        onClick={() => handleJoinClub(club.id)}
+        className="w-full py-2 px-4 rounded-lg font-medium transition-colors bg-blue-600 text-white hover:bg-blue-700"
+      >
+        Join Club
+      </button>
+    );
   };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
@@ -75,9 +214,9 @@ export default function ClubsDirectoryPage() {
                 {club.category}
               </span>
             </div>
-            
-            <p className="text-gray-600 text-sm mb-4 line-clamp-2">{club.description}</p>
-            
+
+            <p className="text-gray-600 text-sm mb-4 line-clamp-2 min-h-[40px]">{club.description}</p>
+
             <div className="space-y-2 mb-4">
               <div className="flex items-center text-sm text-gray-600">
                 <Users className="h-4 w-4 mr-2 text-gray-400" />
@@ -85,24 +224,15 @@ export default function ClubsDirectoryPage() {
               </div>
               <div className="flex items-center text-sm text-gray-600">
                 <Calendar className="h-4 w-4 mr-2 text-gray-400" />
-                <span>{club.meetingDay}</span>
+                <span>{club.meetingDay || 'TBA'}</span>
               </div>
               <div className="flex items-center text-sm text-gray-600">
                 <MapPin className="h-4 w-4 mr-2 text-gray-400" />
-                <span>{club.location}</span>
+                <span>{club.location || 'TBA'}</span>
               </div>
             </div>
 
-            <button
-              onClick={() => toggleJoin(club.id)}
-              className={`w-full py-2 px-4 rounded-lg font-medium transition-colors ${
-                club.isJoined
-                  ? 'bg-gray-200 text-gray-800 hover:bg-gray-300'
-                  : 'bg-blue-600 text-white hover:bg-blue-700'
-              }`}
-            >
-              {club.isJoined ? 'Leave Club' : 'Join Club'}
-            </button>
+            {getButtonState(club)}
           </div>
         ))}
       </div>
