@@ -46,7 +46,7 @@ const HomePage: React.FC = () => {
                             <a href="#" className="text-gray-600 hover:text-blue-600">Home</a>
                             <a href="#featured-clubs" className="text-gray-600 hover:text-blue-600">Clubs</a>
                             <a href="#upcoming-events" className="text-gray-600 hover:text-blue-600">Events</a>
-                            <a href="#" className="text-gray-600 hover:text-blue-600">About</a>
+                            <a href="#about" className="text-gray-600 hover:text-blue-600">About</a>
                             <Link href="/login" className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
                                 Sign In
                             </Link>
@@ -72,7 +72,7 @@ const HomePage: React.FC = () => {
                             <a href="#" className="block px-3 py-2 text-gray-600 hover:bg-gray-50">Home</a>
                             <a href="#featured-clubs" className="block px-3 py-2 text-gray-600 hover:bg-gray-50">Clubs</a>
                             <a href="#upcoming-events" className="block px-3 py-2 text-gray-600 hover:bg-gray-50">Events</a>
-                            <a href="#" className="block px-3 py-2 text-gray-600 hover:bg-gray-50">About</a>
+                            <a href="#about" className="block px-3 py-2 text-gray-600 hover:bg-gray-50">About</a>
                             <div className="pt-4 space-y-2">
                                 <Link href="/login" className="block w-full text-center px-4 py-2 bg-blue-600 text-white rounded-lg">Sign In</Link>
                                 <Link href="/register" className="block w-full text-center px-4 py-2 border border-gray-300 rounded-lg">Register</Link>
@@ -137,6 +137,56 @@ const HomePage: React.FC = () => {
                                 <div className="text-gray-600">{stat.label}</div>
                             </div>
                         ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* About Section */}
+            <section id="about" className="py-16 bg-white border-t border-gray-100">
+                <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+                    {/* Header */}
+                    <div className="text-center mb-14">
+                        <h2 className="text-3xl font-bold text-gray-900">About Us</h2>
+                        <p className="mt-4 text-lg text-gray-600">
+                            Empowering student communities through digital club management
+                        </p>
+                    </div>
+
+                    {/* Who We Are */}
+                    <div className="mb-12">
+                        <h3 className="text-2xl font-semibold text-gray-800 mb-4">Who We Are</h3>
+                        <p className="text-gray-700 leading-relaxed">
+                            The Club Registration and Management System is a centralized web platform developed to support student clubs and organizations at{' '}
+                            <span className="font-medium">Addis Ababa University</span>.
+                            It provides an efficient and transparent way for students to discover clubs, register as members, and participate in university activities.
+                        </p>
+                    </div>
+
+                    {/* Mission & Vision */}
+                    <div className="grid gap-8 md:grid-cols-2 mb-12">
+                        <div className="rounded-xl bg-gray-50 p-6 shadow-sm border border-gray-100">
+                            <h3 className="text-xl font-semibold text-gray-800 mb-3">Our Mission</h3>
+                            <p className="text-gray-700 leading-relaxed">
+                                Our mission is to enhance student engagement by simplifying club registration, improving communication, and supporting organized extracurricular activities across the university.
+                            </p>
+                        </div>
+                        <div className="rounded-xl bg-gray-50 p-6 shadow-sm border border-gray-100">
+                            <h3 className="text-xl font-semibold text-gray-800 mb-3">Our Vision</h3>
+                            <p className="text-gray-700 leading-relaxed">
+                                We envision a connected university community where every student can easily access clubs aligned with their interests and actively contribute to campus life.
+                            </p>
+                        </div>
+                    </div>
+
+                    {/* What We Offer */}
+                    <div className="mb-12">
+                        <h3 className="text-2xl font-semibold text-gray-800 mb-6">What the Platform Offers</h3>
+                        <ul className="grid gap-4 md:grid-cols-2 text-gray-700">
+                            <li className="rounded-lg bg-gray-50 p-4 shadow-sm border border-gray-100">Centralized club registration and management</li>
+                            <li className="rounded-lg bg-gray-50 p-4 shadow-sm border border-gray-100">Secure student authentication and role-based access</li>
+                            <li className="rounded-lg bg-gray-50 p-4 shadow-sm border border-gray-100">Event creation, scheduling, and RSVP tracking</li>
+                            <li className="rounded-lg bg-gray-50 p-4 shadow-sm border border-gray-100">Announcements and notifications for club members</li>
+                        </ul>
                     </div>
                 </div>
             </section>
