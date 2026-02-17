@@ -37,17 +37,17 @@ const HomePage: React.FC = () => {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between h-16">
                         <div className="flex items-center">
-                            <Trophy className="h-8 w-8 text-blue-600" />
+                            <Trophy className="h-8 w-8 text-[rgb(2_116_181_/_50%)]" />
                             <span className="ml-2 text-xl font-bold text-gray-800">AAU Clubs</span>
                         </div>
 
                         {/* Desktop Menu */}
                         <div className="hidden md:flex items-center space-x-8">
-                            <a href="#" className="text-gray-600 hover:text-blue-600">Home</a>
-                            <a href="#featured-clubs" className="text-gray-600 hover:text-blue-600">Clubs</a>
-                            <a href="#upcoming-events" className="text-gray-600 hover:text-blue-600">Events</a>
-                            <a href="#about" className="text-gray-600 hover:text-blue-600">About</a>
-                            <Link href="/login" className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                            <a href="#" className="text-gray-600 hover:text-[rgb(2_116_181_/_50%)]">Home</a>
+                            <a href="#featured-clubs" className="text-gray-600 hover:text-[rgb(2_116_181_/_50%)]">Clubs</a>
+                            <a href="#upcoming-events" className="text-gray-600 hover:text-[rgb(2_116_181_/_50%)]">Events</a>
+                            <a href="#about" className="text-gray-600 hover:text-[rgb(2_116_181_/_50%)]">About</a>
+                            <Link href="/login" className="px-4 py-2 bg-[rgb(2_116_181_/_50%)] text-white rounded-lg hover:bg-[rgb(2_116_181_/_70%)]">
                                 Sign In
                             </Link>
                             <Link href="/register" className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
@@ -74,7 +74,7 @@ const HomePage: React.FC = () => {
                             <a href="#upcoming-events" className="block px-3 py-2 text-gray-600 hover:bg-gray-50">Events</a>
                             <a href="#about" className="block px-3 py-2 text-gray-600 hover:bg-gray-50">About</a>
                             <div className="pt-4 space-y-2">
-                                <Link href="/login" className="block w-full text-center px-4 py-2 bg-blue-600 text-white rounded-lg">Sign In</Link>
+                                <Link href="/login" className="block w-full text-center px-4 py-2 bg-[rgb(2_116_181_/_50%)] text-white rounded-lg">Sign In</Link>
                                 <Link href="/register" className="block w-full text-center px-4 py-2 border border-gray-300 rounded-lg">Register</Link>
                             </div>
                         </div>
@@ -83,18 +83,18 @@ const HomePage: React.FC = () => {
             </nav>
 
             {/* Hero Section */}
-            <section className="bg-gradient-to-br from-blue-600 to-blue-800 text-white">
+            <section className="bg-[rgb(2_116_181_/_50%)] text-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
                     <div className="grid md:grid-cols-2 gap-12 items-center">
                         <div>
                             <h1 className="text-4xl md:text-5xl font-bold mb-6">
                                 Discover Your Passion at AAU
                             </h1>
-                            <p className="text-xl mb-8 text-blue-100">
+                            <p className="text-xl mb-8 text-white/90">
                                 Join clubs, connect with like-minded students, and make the most of your university life.
                             </p>
                             <div className="flex flex-wrap gap-4">
-                                <Link href="/clubs" className="px-8 py-3 bg-white text-blue-600 rounded-lg font-semibold hover:bg-gray-100 flex items-center">
+                                <Link href="/clubs" className="px-8 py-3 bg-white text-[rgb(2_116_181_/_50%)] rounded-lg font-semibold hover:bg-gray-100 flex items-center">
                                     Explore Clubs <ArrowRight className="ml-2 h-5 w-5" />
                                 </Link>
                                 <button className="px-8 py-3 border-2 border-white text-white rounded-lg font-semibold hover:bg-white/10">
@@ -132,7 +132,7 @@ const HomePage: React.FC = () => {
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
                         {stats.map((stat, index) => (
                             <div key={index} className="text-center">
-                                <stat.icon className="h-8 w-8 mx-auto mb-3 text-blue-600" />
+                                <stat.icon className="h-8 w-8 mx-auto mb-3 text-[rgb(2_116_181_/_50%)]" />
                                 <div className="text-3xl font-bold text-gray-800">{stat.value}</div>
                                 <div className="text-gray-600">{stat.label}</div>
                             </div>
@@ -211,7 +211,7 @@ const HomePage: React.FC = () => {
                                     <Users className="h-4 w-4 mr-1" />
                                     {club.members} members
                                 </div>
-                                <button className="mt-4 text-blue-600 hover:text-blue-700 text-sm font-medium flex items-center">
+                                <button className="mt-4 text-[rgb(2_116_181_/_50%)] hover:text-[rgb(2_116_181_/_70%)] text-sm font-medium flex items-center">
                                     View Club <ArrowRight className="ml-1 h-4 w-4" />
                                 </button>
                             </div>
@@ -234,7 +234,7 @@ const HomePage: React.FC = () => {
                             <h2 className="text-3xl font-bold text-gray-800">Upcoming Events</h2>
                             <p className="text-gray-600 mt-2">Don't miss out on these exciting activities</p>
                         </div>
-                        <button className="text-blue-600 hover:text-blue-700 font-medium hidden md:block">
+                        <button className="text-[rgb(2_116_181_/_50%)] hover:text-[rgb(2_116_181_/_70%)] font-medium hidden md:block">
                             View Calendar →
                         </button>
                     </div>
@@ -243,7 +243,7 @@ const HomePage: React.FC = () => {
                         {upcomingEvents.map((event) => (
                             <div key={event.id} className="border border-gray-200 rounded-xl p-6 hover:shadow-md transition-shadow">
                                 <div className="flex items-center justify-between mb-4">
-                                    <span className="px-3 py-1 bg-blue-100 text-blue-800 text-sm font-medium rounded-full">
+                                    <span className="px-3 py-1 bg-[rgb(2_116_181_/_10%)] text-[rgb(2_116_181)] text-sm font-medium rounded-full">
                                         {event.date}
                                     </span>
                                     <Calendar className="h-5 w-5 text-gray-400" />
@@ -251,7 +251,7 @@ const HomePage: React.FC = () => {
                                 <h3 className="font-semibold text-gray-800 mb-2">{event.title}</h3>
                                 <p className="text-gray-600 text-sm mb-1">{event.time}</p>
                                 <p className="text-gray-600 text-sm">{event.location}</p>
-                                <button className="mt-4 text-blue-600 hover:text-blue-700 text-sm font-medium">
+                                <button className="mt-4 text-[rgb(2_116_181_/_50%)] hover:text-[rgb(2_116_181_/_70%)] text-sm font-medium">
                                     Learn More →
                                 </button>
                             </div>
@@ -261,14 +261,14 @@ const HomePage: React.FC = () => {
             </section>
 
             {/* Call to Action */}
-            <section className="py-16 bg-blue-600">
+            <section className="py-16 bg-[rgb(2_116_181_/_50%)]">
                 <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
                     <h2 className="text-3xl font-bold text-white mb-4">Ready to Get Involved?</h2>
-                    <p className="text-xl text-blue-100 mb-8">
+                    <p className="text-xl text-white/90 mb-8">
                         Join a community of passionate students and make your mark at AAU
                     </p>
                     <div className="flex flex-wrap justify-center gap-4">
-                        <button className="px-8 py-3 bg-white text-blue-600 rounded-lg font-semibold hover:bg-gray-100">
+                        <button className="px-8 py-3 bg-white text-[rgb(2_116_181_/_50%)] rounded-lg font-semibold hover:bg-gray-100">
                             Browse All Clubs
                         </button>
                         <button className="px-8 py-3 border-2 border-white text-white rounded-lg font-semibold hover:bg-white/10">
@@ -284,7 +284,7 @@ const HomePage: React.FC = () => {
                     <div className="grid md:grid-cols-4 gap-8">
                         <div>
                             <div className="flex items-center mb-4">
-                                <Trophy className="h-6 w-6 text-blue-500" />
+                                <Trophy className="h-6 w-6 text-[rgb(2_116_181_/_50%)]" />
                                 <span className="ml-2 text-white font-bold">AAU Clubs</span>
                             </div>
                             <p className="text-sm">Empowering students to connect, learn, and grow through campus clubs.</p>
