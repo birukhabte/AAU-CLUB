@@ -32,7 +32,7 @@ export default function LeaderDashboardPage() {
             setLoading(true);
 
             // Get the club where the user is the leader
-            const clubsResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/clubs`, {
+            const clubsResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/clubs`, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 },
@@ -52,7 +52,7 @@ export default function LeaderDashboardPage() {
 
             // Fetch all members to calculate stats
             const membersResponse = await fetch(
-                `${process.env.NEXT_PUBLIC_API_URL}/api/clubs/${leaderClub.id}/members`,
+                `${process.env.NEXT_PUBLIC_API_URL}/clubs/${leaderClub.id}/members`,
                 {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`,
