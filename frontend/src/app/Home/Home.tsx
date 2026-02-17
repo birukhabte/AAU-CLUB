@@ -50,7 +50,7 @@ const HomePage: React.FC = () => {
                             <Link href="/login" className="px-4 py-2 bg-[rgb(2_116_181_/_50%)] text-white rounded-lg hover:bg-[rgb(2_116_181_/_70%)]">
                                 Sign In
                             </Link>
-                            <Link href="/register" className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+                            <Link href="/register" className="px-4 py-2 bg-[rgb(2_116_181)] text-white rounded-lg hover:bg-[rgb(2_116_181_/_80%)]">
                                 Register
                             </Link>
                         </div>
@@ -75,7 +75,7 @@ const HomePage: React.FC = () => {
                             <a href="#about" className="block px-3 py-2 text-gray-600 hover:bg-gray-50">About</a>
                             <div className="pt-4 space-y-2">
                                 <Link href="/login" className="block w-full text-center px-4 py-2 bg-[rgb(2_116_181_/_50%)] text-white rounded-lg">Sign In</Link>
-                                <Link href="/register" className="block w-full text-center px-4 py-2 border border-gray-300 rounded-lg">Register</Link>
+                                <Link href="/register" className="block w-full text-center px-4 py-2 bg-[rgb(2_116_181)] text-white rounded-lg">Register</Link>
                             </div>
                         </div>
                     </div>
