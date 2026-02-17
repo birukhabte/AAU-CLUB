@@ -14,7 +14,7 @@ import {
 const leaderMenu = [
   {
     title: 'Dashboard',
-    href: '/leader-dashboard',
+    href: '/dashboard/leader',
     icon: LayoutDashboard,
   },
   {
@@ -75,10 +75,9 @@ export default function LeaderSidebar() {
               key={item.title}
               href={item.href}
               className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all
-                ${
-                  isActive
-                    ? 'bg-emerald-600 text-white'
-                    : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                ${isActive
+                  ? 'bg-emerald-600 text-white'
+                  : 'text-slate-300 hover:bg-slate-800 hover:text-white'
                 }`}
             >
               <Icon className="w-5 h-5" />
