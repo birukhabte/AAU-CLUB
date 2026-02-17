@@ -35,7 +35,7 @@ export default function MemberRequestsPage() {
             setLoading(true);
 
             // First, get the club where the user is the leader
-            const clubsResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/clubs`, {
+            const clubsResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/clubs`, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 },
@@ -55,7 +55,7 @@ export default function MemberRequestsPage() {
 
             // Then fetch pending membership requests for this club
             const requestsResponse = await fetch(
-                `${process.env.NEXT_PUBLIC_API_URL}/api/clubs/${leaderClub.id}/members?status=PENDING`,
+                `${process.env.NEXT_PUBLIC_API_URL}/clubs/${leaderClub.id}/members?status=PENDING`,
                 {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -79,7 +79,7 @@ export default function MemberRequestsPage() {
             setProcessingId(membershipId);
 
             const response = await fetch(
-                `${process.env.NEXT_PUBLIC_API_URL}/api/memberships/${membershipId}/status`,
+                `${process.env.NEXT_PUBLIC_API_URL}/memberships/${membershipId}/status`,
                 {
                     method: 'PATCH',
                     headers: {
