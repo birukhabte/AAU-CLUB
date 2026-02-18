@@ -73,7 +73,9 @@ export default function AdminSidebar() {
       {/* Navigation */}
       <nav className="flex-1 px-3 py-4 space-y-1">
         {adminMenu.map((item) => {
-          const isActive = pathname.startsWith(item.href);
+          const isActive = item.href === '/admin-dashboard'
+            ? pathname === '/admin-dashboard'
+            : pathname.startsWith(item.href);
           const Icon = item.icon;
 
           return (
@@ -81,10 +83,9 @@ export default function AdminSidebar() {
               key={item.title}
               href={item.href}
               className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all
-                ${
-                  isActive
-                    ? 'bg-blue-600 text-white'
-                    : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                ${isActive
+                  ? 'bg-blue-600 text-white'
+                  : 'text-slate-300 hover:bg-slate-800 hover:text-white'
                 }`}
             >
               <Icon className="w-5 h-5" />
