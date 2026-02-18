@@ -285,7 +285,7 @@ export default function ClubManagement() {
                     <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
                         Club Management
                     </h1>
-                    <p className="text-sm text-gray-500 mt-1">
+                    <p className="text-sm text-gray-700 mt-1">
                         Create, update, activate or deactivate clubs across the platform.
                     </p>
                 </div>
@@ -340,25 +340,25 @@ export default function ClubManagement() {
                 >
                     {/* Search */}
                     <div className="relative flex-1">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-600" />
                         <input
                             type="search"
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
                             placeholder="Search clubs by name or description…"
-                            className="w-full pl-9 pr-3 py-2 text-sm border border-gray-200 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
+                            className="w-full pl-9 pr-3 py-2 text-sm text-gray-900 placeholder:text-gray-500 border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
                         />
                     </div>
 
                     {/* Status filter */}
                     <div className="flex items-center gap-2">
-                        <Filter className="w-4 h-4 text-gray-400 hidden sm:block" />
+                        <Filter className="w-4 h-4 text-gray-600 hidden sm:block" />
                         <select
                             value={statusFilter}
                             onChange={(e) =>
                                 setStatusFilter(e.target.value as ClubStatus | "ALL")
                             }
-                            className="border border-gray-200 rounded-lg text-sm px-3 py-2 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                            className="border border-gray-200 rounded-lg text-sm text-gray-900 px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                         >
                             <option value="ALL">All Statuses</option>
                             <option value="ACTIVE">Active</option>
@@ -371,7 +371,7 @@ export default function ClubManagement() {
                     <select
                         value={categoryFilter}
                         onChange={(e) => setCategoryFilter(e.target.value)}
-                        className="border border-gray-200 rounded-lg text-sm px-3 py-2 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                        className="border border-gray-200 rounded-lg text-sm text-gray-900 px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                     >
                         <option value="">All Categories</option>
                         {CATEGORIES.map((cat) => (
@@ -397,7 +397,7 @@ export default function ClubManagement() {
                         <Loader2 className="w-8 h-8 text-indigo-600 animate-spin" />
                     </div>
                 ) : clubs.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center py-20 text-gray-400">
+                    <div className="flex flex-col items-center justify-center py-20 text-gray-600">
                         <Search className="w-10 h-10 mb-3" />
                         <p className="text-sm">No clubs found.</p>
                     </div>
@@ -406,32 +406,32 @@ export default function ClubManagement() {
                         <table className="min-w-full divide-y divide-gray-100">
                             <thead className="bg-gray-50/80">
                                 <tr>
-                                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
                                         Club
                                     </th>
-                                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
                                         Category
                                     </th>
-                                    <th className="px-4 py-3 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                    <th className="px-4 py-3 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">
                                         <span className="inline-flex items-center gap-1">
                                             <Users className="w-3.5 h-3.5" /> Members
                                         </span>
                                     </th>
-                                    <th className="px-4 py-3 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                    <th className="px-4 py-3 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">
                                         <span className="inline-flex items-center gap-1">
                                             <CalendarDays className="w-3.5 h-3.5" /> Events
                                         </span>
                                     </th>
-                                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
                                         Leader
                                     </th>
-                                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
                                         Status
                                     </th>
-                                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
                                         Created
                                     </th>
-                                    <th className="px-4 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                    <th className="px-4 py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">
                                         Actions
                                     </th>
                                 </tr>
@@ -447,11 +447,11 @@ export default function ClubManagement() {
                                             className="hover:bg-gray-50/60 transition-colors"
                                         >
                                             {/* Club name + description */}
-                                            <td className="px-4 py-3 max-w-[220px]">
-                                                <p className="text-sm font-semibold text-gray-900 truncate">
+                                            <td className="px-4 py-3">
+                                                <p className="text-sm font-semibold text-gray-900">
                                                     {club.name}
                                                 </p>
-                                                <p className="text-xs text-gray-400 truncate mt-0.5">
+                                                <p className="text-xs text-gray-600 mt-0.5">
                                                     {club.description}
                                                 </p>
                                             </td>
@@ -500,7 +500,7 @@ export default function ClubManagement() {
                                             </td>
 
                                             {/* Created */}
-                                            <td className="px-4 py-3 text-xs text-gray-500 whitespace-nowrap">
+                                            <td className="px-4 py-3 text-xs text-gray-700 whitespace-nowrap">
                                                 {new Date(club.createdAt).toLocaleDateString()}
                                             </td>
 
@@ -510,7 +510,7 @@ export default function ClubManagement() {
                                                     <button
                                                         onClick={() => openEditModal(club)}
                                                         disabled={isActionLoading}
-                                                        className="p-1.5 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-md transition-colors"
+                                                        className="p-1.5 text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-md transition-colors"
                                                         title="Edit club"
                                                     >
                                                         <Edit3 className="w-4 h-4" />
@@ -518,7 +518,7 @@ export default function ClubManagement() {
                                                     <button
                                                         onClick={() => handleDelete(club.id)}
                                                         disabled={isActionLoading}
-                                                        className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                                                        className="p-1.5 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors"
                                                         title="Delete club"
                                                     >
                                                         {isActionLoading ? (
@@ -540,21 +540,21 @@ export default function ClubManagement() {
                 {/* Pagination */}
                 {totalPages > 1 && (
                     <div className="flex items-center justify-between px-4 py-3 border-t border-gray-100">
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs text-gray-700">
                             Page {page} of {totalPages} &middot; {total} clubs total
                         </p>
                         <div className="inline-flex items-center gap-1">
                             <button
                                 onClick={() => fetchClubs(page - 1)}
                                 disabled={page <= 1}
-                                className="p-1.5 text-gray-400 hover:text-gray-700 disabled:opacity-40 rounded-md"
+                                className="p-1.5 text-gray-600 hover:text-gray-900 disabled:opacity-40 rounded-md"
                             >
                                 <ChevronLeft className="w-4 h-4" />
                             </button>
                             <button
                                 onClick={() => fetchClubs(page + 1)}
                                 disabled={page >= totalPages}
-                                className="p-1.5 text-gray-400 hover:text-gray-700 disabled:opacity-40 rounded-md"
+                                className="p-1.5 text-gray-600 hover:text-gray-900 disabled:opacity-40 rounded-md"
                             >
                                 <ChevronRight className="w-4 h-4" />
                             </button>
@@ -598,7 +598,7 @@ export default function ClubManagement() {
                                     onChange={(e) =>
                                         setFormData({ ...formData, name: e.target.value })
                                     }
-                                    className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                    className="w-full px-3 py-2 text-sm text-gray-900 placeholder:text-gray-500 border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                                     placeholder="e.g. AAU Coding Club"
                                 />
                             </div>
@@ -613,7 +613,7 @@ export default function ClubManagement() {
                                     onChange={(e) =>
                                         setFormData({ ...formData, description: e.target.value })
                                     }
-                                    className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 resize-none"
+                                    className="w-full px-3 py-2 text-sm text-gray-900 placeholder:text-gray-500 border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 resize-none"
                                     placeholder="A brief description of the club…"
                                 />
                             </div>
@@ -628,7 +628,7 @@ export default function ClubManagement() {
                                         onChange={(e) =>
                                             setFormData({ ...formData, category: e.target.value })
                                         }
-                                        className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                        className="w-full px-3 py-2 text-sm text-gray-900 border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                                     >
                                         <option value="">Select…</option>
                                         {CATEGORIES.map((cat) => (
@@ -648,7 +648,7 @@ export default function ClubManagement() {
                                         onChange={(e) =>
                                             setFormData({ ...formData, location: e.target.value })
                                         }
-                                        className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                        className="w-full px-3 py-2 text-sm text-gray-900 placeholder:text-gray-500 border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                                         placeholder="e.g. Room 204"
                                     />
                                 </div>
@@ -664,7 +664,7 @@ export default function ClubManagement() {
                                         onChange={(e) =>
                                             setFormData({ ...formData, meetingDay: e.target.value })
                                         }
-                                        className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                        className="w-full px-3 py-2 text-sm text-gray-900 border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                                     >
                                         <option value="">Select…</option>
                                         {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].map(
@@ -689,7 +689,7 @@ export default function ClubManagement() {
                                                 meetingTime: e.target.value,
                                             })
                                         }
-                                        className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                        className="w-full px-3 py-2 text-sm text-gray-900 border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                                     />
                                 </div>
                             </div>
@@ -757,7 +757,7 @@ export default function ClubManagement() {
                                     onChange={(e) =>
                                         setFormData({ ...formData, name: e.target.value })
                                     }
-                                    className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                    className="w-full px-3 py-2 text-sm text-gray-900 border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                                 />
                             </div>
 
@@ -771,7 +771,7 @@ export default function ClubManagement() {
                                     onChange={(e) =>
                                         setFormData({ ...formData, description: e.target.value })
                                     }
-                                    className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 resize-none"
+                                    className="w-full px-3 py-2 text-sm text-gray-900 border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 resize-none"
                                 />
                             </div>
 
@@ -785,7 +785,7 @@ export default function ClubManagement() {
                                         onChange={(e) =>
                                             setFormData({ ...formData, category: e.target.value })
                                         }
-                                        className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                        className="w-full px-3 py-2 text-sm text-gray-900 border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                                     >
                                         <option value="">Select…</option>
                                         {CATEGORIES.map((cat) => (
@@ -805,7 +805,7 @@ export default function ClubManagement() {
                                         onChange={(e) =>
                                             setFormData({ ...formData, location: e.target.value })
                                         }
-                                        className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                        className="w-full px-3 py-2 text-sm text-gray-900 placeholder:text-gray-500 border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                                     />
                                 </div>
                             </div>
@@ -820,7 +820,7 @@ export default function ClubManagement() {
                                         onChange={(e) =>
                                             setFormData({ ...formData, meetingDay: e.target.value })
                                         }
-                                        className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                        className="w-full px-3 py-2 text-sm text-gray-900 border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                                     >
                                         <option value="">Select…</option>
                                         {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].map(
@@ -845,7 +845,7 @@ export default function ClubManagement() {
                                                 meetingTime: e.target.value,
                                             })
                                         }
-                                        className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                        className="w-full px-3 py-2 text-sm text-gray-900 border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                                     />
                                 </div>
                             </div>
