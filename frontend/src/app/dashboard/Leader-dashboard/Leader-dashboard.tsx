@@ -3,8 +3,7 @@
 import React, { useState } from 'react';
 import { 
   Users, UserPlus, UserCheck, UserX, Calendar, 
-  Info, Edit2, CheckCircle, XCircle, Clock,
-  Mail, Phone, MapPin, Award, TrendingUp
+  Info, Edit2, Mail, Award, TrendingUp
 } from 'lucide-react';
 
 interface ClubInfo {
@@ -19,16 +18,6 @@ interface ClubInfo {
   pendingRequests: number;
   approvedMembers: number;
   rejectedRequests: number;
-}
-
-interface MemberRequest {
-  id: string;
-  name: string;
-  studentId: string;
-  department: string;
-  year: string;
-  requestedAt: string;
-  status: 'pending' | 'approved' | 'rejected';
 }
 
 const LeaderDashboard: React.FC = () => {
@@ -46,53 +35,6 @@ const LeaderDashboard: React.FC = () => {
     approvedMembers: 42,
     rejectedRequests: 3
   });
-
-  const [memberRequests, setMemberRequests] = useState<MemberRequest[]>([
-    { 
-      id: '1', 
-      name: 'Abebe Kebede', 
-      studentId: 'AAU/2024/1234',
-      department: 'Computer Science',
-      year: '3rd Year',
-      requestedAt: '2024-03-15',
-      status: 'pending'
-    },
-    { 
-      id: '2', 
-      name: 'Sara Tesfaye', 
-      studentId: 'AAU/2024/5678',
-      department: 'Electrical Engineering',
-      year: '2nd Year',
-      requestedAt: '2024-03-14',
-      status: 'pending'
-    },
-    { 
-      id: '3', 
-      name: 'Dawit Haile', 
-      studentId: 'AAU/2024/9012',
-      department: 'Mechanical Engineering',
-      year: '4th Year',
-      requestedAt: '2024-03-14',
-      status: 'pending'
-    },
-  ]);
-
-  const handleApprove = (id: string) => {
-    setMemberRequests(prev => 
-      prev.map(req => 
-        req.id === id ? { ...req, status: 'approved' } : req
-      )
-    );
-    // Update stats
-  };
-
-  const handleReject = (id: string) => {
-    setMemberRequests(prev => 
-      prev.map(req => 
-        req.id === id ? { ...req, status: 'rejected' } : req
-      )
-    );
-  };
 
   // Stats cards data
   const stats = [
@@ -248,92 +190,6 @@ const LeaderDashboard: React.FC = () => {
               </div>
             );
           })}
-        </div>
-      </div>
-
-      {/* Member Requests Section */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-          <div className="p-6 border-b border-gray-200">
-            <div className="flex justify-between items-center">
-              <h3 className="text-lg font-semibold text-gray-800">Pending Membership Requests</h3>
-              <span className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">
-                {clubInfo.pendingRequests} New Requests
-              </span>
-            </div>
-          </div>
-
-          <div className="divide-y divide-gray-200">
-            {memberRequests.map((request) => (
-              <div key={request.id} className="p-6 hover:bg-gray-50 transition-colors">
-                <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center mb-2">
-                      <h4 className="font-semibold text-gray-800">{request.name}</h4>
-                      <span className="ml-3 px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">
-                        {request.studentId}
-                      </span>
-                    </div>
-                    
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
-                      <div>
-                        <p className="text-gray-500">Department</p>
-                        <p className="text-gray-800">{request.department}</p>
-                      </div>
-                      <div>
-                        <p className="text-gray-500">Year</p>
-                        <p className="text-gray-800">{request.year}</p>
-                      </div>
-                      <div>
-                        <p className="text-gray-500">Requested</p>
-                        <p className="text-gray-800 flex items-center">
-                          <Clock className="h-3 w-3 mr-1 text-gray-400" />
-                          {request.requestedAt}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex gap-2 mt-4 md:mt-0">
-                    <button 
-                      onClick={() => handleApprove(request.id)}
-                      className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center"
-                    >
-                      <CheckCircle className="h-4 w-4 mr-2" />
-                      Approve
-                    </button>
-                    <button 
-                      onClick={() => handleReject(request.id)}
-                      className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 flex items-center"
-                    >
-                      <XCircle className="h-4 w-4 mr-2" />
-                      Reject
-                    </button>
-                    <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
-                      View Profile
-                    </button>
-                  </div>
-                </div>
-
-                {/* Status indicator for processed requests */}
-                {request.status !== 'pending' && (
-                  <div className={`mt-3 text-sm ${
-                    request.status === 'approved' ? 'text-green-600' : 'text-red-600'
-                  }`}>
-                    {request.status === 'approved' ? '✓ Approved' : '✗ Rejected'}
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-
-          {memberRequests.length === 0 && (
-            <div className="p-12 text-center">
-              <UserPlus className="h-12 w-12 mx-auto text-gray-400 mb-3" />
-              <p className="text-gray-500 text-lg">No pending requests</p>
-              <p className="text-gray-400 text-sm">New membership requests will appear here</p>
-            </div>
-          )}
         </div>
       </div>
 
