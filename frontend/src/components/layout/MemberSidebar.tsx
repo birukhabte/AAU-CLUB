@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useAuth } from '@/hooks/useAuth';
 import {
   LayoutDashboard,
   Search,
@@ -57,17 +58,31 @@ const memberMenu = [
 
 export default function MemberSidebar() {
   const pathname = usePathname();
+  const { user } = useAuth();
+
+  const getInitials = () => {
+    if (!user) return 'U';
+    return user.firstName?.charAt(0).toUpperCase() || 'U';
+  };
 
   return (
     <aside className="h-screen w-64 bg-slate-900 text-white fixed left-0 top-0 flex flex-col">
-      {/* Header */}
+      {/* Header with User Avatar */}
       <div className="px-6 py-5 border-b border-slate-800">
-        <h1 className="text-xl font-bold tracking-wide">
+        <div className="flex items-center gap-3 mb-3">
+          <div className="w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold text-lg">
+            {getInitials()}
+          </div>
+          <div className="flex-1">
+            <h2 className="text-sm font-semibold text-white">
+              {user?.firstName} {user?.lastName}
+            </h2>
+            <p className="text-xs text-slate-400">Student</p>
+          </div>
+        </div>
+        <h1 className="text-lg font-bold tracking-wide">
           Student Panel
         </h1>
-        <p className="text-sm text-slate-400 mt-1">
-          Club participation
-        </p>
       </div>
 
       {/* Navigation */}
