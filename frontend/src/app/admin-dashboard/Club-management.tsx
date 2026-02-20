@@ -71,6 +71,25 @@ interface CreateClubForm {
     location: string;
 }
 
+interface UserData {
+    id: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    role: 'ADMIN' | 'CLUB_LEADER' | 'MEMBER';
+}
+
+interface UsersResponse {
+    success: boolean;
+    data: UserData[];
+    pagination: {
+        page: number;
+        limit: number;
+        total: number;
+        pages: number;
+    };
+}
+
 /* ------------------------------------------------------------------ */
 /*  Status badge helper                                                */
 /* ------------------------------------------------------------------ */
@@ -127,6 +146,7 @@ export default function ClubManagement() {
     const [search, setSearch] = useState("");
     const [statusFilter, setStatusFilter] = useState<ClubStatus | "ALL">("ALL");
     const [categoryFilter, setCategoryFilter] = useState("");
+    const [clubLeaders, setClubLeaders] = useState<UserData[]>([]);
 
     // Modal state
     const [showCreateModal, setShowCreateModal] = useState(false);
@@ -171,9 +191,25 @@ export default function ClubManagement() {
         [search, statusFilter, categoryFilter]
     );
 
+    /* Fetch club leaders -------------------------------------------- */
+    const fetchClubLeaders = useCallback(async () => {
+        try {
+            const res = await api.get<UsersResponse>("/users", {
+                params: {
+                    role: "CLUB_LEADER",
+                    limit: 100,
+                },
+            });
+            setClubLeaders(res.data.data);
+        } catch {
+            console.error("Failed to fetch club leaders");
+        }
+    }, []);
+
     useEffect(() => {
         fetchClubs(1);
-    }, [fetchClubs]);
+        fetchClubLeaders();
+    }, [fetchClubs, fetchClubLeaders]);
 
     /* Handlers ------------------------------------------------------ */
     const handleStatusChange = async (id: string, newStatus: ClubStatus) => {
@@ -183,6 +219,19 @@ export default function ClubManagement() {
             await fetchClubs(page);
         } catch {
             console.error("Failed to update status");
+        } finally {
+            setActionLoading(null);
+        }
+    };
+
+    const handleLeaderChange = async (clubId: string, newLeaderId: string) => {
+        setActionLoading(clubId);
+        try {
+            await api.patch(`/clubs/${clubId}/leader`, { leaderId: newLeaderId });
+            await fetchClubs(page);
+        } catch {
+            console.error("Failed to update club leader");
+            alert("Failed to update club leader. Please try again.");
         } finally {
             setActionLoading(null);
         }
@@ -475,9 +524,27 @@ export default function ClubManagement() {
 
                                             {/* Leader */}
                                             <td className="px-4 py-3 text-sm text-gray-700">
-                                                {club.leader
-                                                    ? `${club.leader.firstName} ${club.leader.lastName}`
-                                                    : "—"}
+                                                <select
+                                                    value={club.leaderId}
+                                                    disabled={isActionLoading}
+                                                    onChange={(e) =>
+                                                        handleLeaderChange(club.id, e.target.value)
+                                                    }
+                                                    className="text-sm text-gray-900 border border-gray-200 rounded-md px-2 py-1 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer"
+                                                >
+                                                    {club.leader && (
+                                                        <option value={club.leaderId}>
+                                                            {club.leader.firstName} {club.leader.lastName}
+                                                        </option>
+                                                    )}
+                                                    {clubLeaders
+                                                        .filter((leader) => leader.id !== club.leaderId)
+                                                        .map((leader) => (
+                                                            <option key={leader.id} value={leader.id}>
+                                                                {leader.firstName} {leader.lastName}
+                                                            </option>
+                                                        ))}
+                                                </select>
                                             </td>
 
                                             {/* Status */}
