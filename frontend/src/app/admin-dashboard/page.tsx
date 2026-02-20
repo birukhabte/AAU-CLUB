@@ -1,8 +1,50 @@
 "use client";
 
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import api from '@/lib/axios';
+import { Loader2 } from 'lucide-react';
+
+interface DashboardStats {
+    overview: {
+        totalUsers: number;
+        totalClubs: number;
+        activeClubs: number;
+        totalEvents: number;
+        upcomingEvents: number;
+        totalMemberships: number;
+        pendingMemberships: number;
+    };
+}
 
 export default function AdminDashboard() {
+    const [stats, setStats] = useState<DashboardStats | null>(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        fetchStats();
+    }, []);
+
+    const fetchStats = async () => {
+        try {
+            setLoading(true);
+            const response = await api.get('/admin/admin-dashboard');
+            setStats(response.data.data);
+        } catch (error) {
+            console.error('Failed to fetch dashboard stats:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center min-h-screen">
+                <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
+            </div>
+        );
+    }
+
     return (
         <div>
             <div className="bg-white border-b border-gray-200">
@@ -26,7 +68,9 @@ export default function AdminDashboard() {
                                     <div className="ml-5 w-0 flex-1">
                                         <dl>
                                             <dt className="text-sm font-medium text-gray-500 truncate">Total Users</dt>
-                                            <dd className="text-2xl font-semibold text-gray-900">1,234</dd>
+                                            <dd className="text-2xl font-semibold text-gray-900">
+                                                {stats?.overview.totalUsers || 0}
+                                            </dd>
                                         </dl>
                                     </div>
                                 </div>
@@ -44,7 +88,9 @@ export default function AdminDashboard() {
                                     <div className="ml-5 w-0 flex-1">
                                         <dl>
                                             <dt className="text-sm font-medium text-gray-500 truncate">Active Clubs</dt>
-                                            <dd className="text-2xl font-semibold text-gray-900">42</dd>
+                                            <dd className="text-2xl font-semibold text-gray-900">
+                                                {stats?.overview.activeClubs || 0}
+                                            </dd>
                                         </dl>
                                     </div>
                                 </div>
@@ -62,7 +108,9 @@ export default function AdminDashboard() {
                                     <div className="ml-5 w-0 flex-1">
                                         <dl>
                                             <dt className="text-sm font-medium text-gray-500 truncate">Upcoming Events</dt>
-                                            <dd className="text-2xl font-semibold text-gray-900">18</dd>
+                                            <dd className="text-2xl font-semibold text-gray-900">
+                                                {stats?.overview.upcomingEvents || 0}
+                                            </dd>
                                         </dl>
                                     </div>
                                 </div>
@@ -80,7 +128,9 @@ export default function AdminDashboard() {
                                     <div className="ml-5 w-0 flex-1">
                                         <dl>
                                             <dt className="text-sm font-medium text-gray-500 truncate">Pending Requests</dt>
-                                            <dd className="text-2xl font-semibold text-gray-900">7</dd>
+                                            <dd className="text-2xl font-semibold text-gray-900">
+                                                {stats?.overview.pendingMemberships || 0}
+                                            </dd>
                                         </dl>
                                     </div>
                                 </div>
