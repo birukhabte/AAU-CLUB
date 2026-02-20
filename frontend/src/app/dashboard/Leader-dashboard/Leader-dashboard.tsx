@@ -1,46 +1,97 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Users, UserPlus, UserCheck, UserX, Calendar, 
-  Info, Edit2, Mail, Award, TrendingUp
+  Info, Edit2, Mail, Award, TrendingUp, AlertCircle
 } from 'lucide-react';
+import api from '@/lib/axios';
+import { useAuth } from '@/hooks/useAuth';
 
 interface ClubInfo {
   id: string;
   name: string;
   category: string;
-  status: 'active' | 'inactive';
+  status: 'ACTIVE' | 'INACTIVE' | 'SUSPENDED';
   description: string;
   createdAt: string;
-  leaders: string[];
-  memberCount: number;
-  pendingRequests: number;
-  approvedMembers: number;
-  rejectedRequests: number;
+  leader: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+  };
+  membershipStats: {
+    approved: number;
+    pending: number;
+    rejected: number;
+    total: number;
+  };
+  _count: {
+    events: number;
+    announcements: number;
+  };
 }
 
 const LeaderDashboard: React.FC = () => {
-  // Mock data - would come from API
-  const [clubInfo] = useState<ClubInfo>({
-    id: '1',
-    name: 'Robotics Club',
-    category: 'Technology',
-    status: 'active',
-    description: 'Building innovative robots and fostering tech innovation at AAU',
-    createdAt: 'January 15, 2024',
-    leaders: ['Dr. Sarah Johnson (Advisor)', 'Michael Chen (President)'],
-    memberCount: 45,
-    pendingRequests: 8,
-    approvedMembers: 42,
-    rejectedRequests: 3
-  });
+  const { user } = useAuth();
+  const [clubInfo, setClubInfo] = useState<ClubInfo | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchLeaderClubs = async () => {
+      try {
+        setLoading(true);
+        const response = await api.get('/clubs/my/leader');
+        
+        if (response.data.success && response.data.data.length > 0) {
+          // Get the first club (assuming a leader manages one club)
+          setClubInfo(response.data.data[0]);
+        } else {
+          setError('No club assigned to you as a leader');
+        }
+      } catch (err: any) {
+        console.error('Error fetching leader clubs:', err);
+        setError(err.response?.data?.message || 'Failed to load club data');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (user) {
+      fetchLeaderClubs();
+    }
+  }, [user]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading your club data...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !clubInfo) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8 max-w-md">
+          <AlertCircle className="h-12 w-12 text-yellow-500 mx-auto mb-4" />
+          <h2 className="text-xl font-semibold text-gray-800 text-center mb-2">No Club Assigned</h2>
+          <p className="text-gray-600 text-center">{error || 'You are not assigned as a leader to any club yet.'}</p>
+        </div>
+      </div>
+    );
+  }
 
   // Stats cards data
   const stats = [
     { 
       label: 'Total Members', 
-      value: clubInfo.memberCount,
+      value: clubInfo.membershipStats.total,
       icon: Users,
       color: 'bg-blue-500',
       bgColor: 'bg-blue-50',
@@ -48,7 +99,7 @@ const LeaderDashboard: React.FC = () => {
     },
     { 
       label: 'Pending Requests', 
-      value: clubInfo.pendingRequests,
+      value: clubInfo.membershipStats.pending,
       icon: UserPlus,
       color: 'bg-yellow-500',
       bgColor: 'bg-yellow-50',
@@ -56,7 +107,7 @@ const LeaderDashboard: React.FC = () => {
     },
     { 
       label: 'Approved Members', 
-      value: clubInfo.approvedMembers,
+      value: clubInfo.membershipStats.approved,
       icon: UserCheck,
       color: 'bg-green-500',
       bgColor: 'bg-green-50',
@@ -64,13 +115,21 @@ const LeaderDashboard: React.FC = () => {
     },
     { 
       label: 'Rejected Requests', 
-      value: clubInfo.rejectedRequests,
+      value: clubInfo.membershipStats.rejected,
       icon: UserX,
       color: 'bg-red-500',
       bgColor: 'bg-red-50',
       textColor: 'text-red-600'
     },
   ];
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 -ml-6">
@@ -99,11 +158,13 @@ const LeaderDashboard: React.FC = () => {
               <h2 className="text-lg font-semibold text-gray-800">Club Overview</h2>
             </div>
             <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-              clubInfo.status === 'active' 
+              clubInfo.status === 'ACTIVE' 
                 ? 'bg-green-100 text-green-800' 
-                : 'bg-gray-100 text-gray-800'
+                : clubInfo.status === 'INACTIVE'
+                ? 'bg-gray-100 text-gray-800'
+                : 'bg-red-100 text-red-800'
             }`}>
-              {clubInfo.status === 'active' ? '● Active' : '○ Inactive'}
+              {clubInfo.status === 'ACTIVE' ? '● Active' : clubInfo.status === 'INACTIVE' ? '○ Inactive' : '⊗ Suspended'}
             </span>
           </div>
 
@@ -117,17 +178,16 @@ const LeaderDashboard: React.FC = () => {
                 <div className="flex items-center text-sm text-gray-600">
                   <Calendar className="h-4 w-4 mr-2 text-gray-400" />
                   <span className="font-medium mr-2">Created:</span>
-                  {clubInfo.createdAt}
+                  {formatDate(clubInfo.createdAt)}
                 </div>
                 <div className="flex items-start text-sm text-gray-600">
                   <Award className="h-4 w-4 mr-2 text-gray-400 mt-0.5" />
                   <div>
-                    <span className="font-medium">Leaders:</span>
-                    <ul className="mt-1 space-y-1">
-                      {clubInfo.leaders.map((leader, index) => (
-                        <li key={index} className="text-gray-600">• {leader}</li>
-                      ))}
-                    </ul>
+                    <span className="font-medium">Leader:</span>
+                    <p className="text-gray-600 mt-1">
+                      {clubInfo.leader.firstName} {clubInfo.leader.lastName}
+                    </p>
+                    <p className="text-gray-500 text-xs">{clubInfo.leader.email}</p>
                   </div>
                 </div>
               </div>
@@ -183,7 +243,7 @@ const LeaderDashboard: React.FC = () => {
                   <div className="w-full bg-gray-200 rounded-full h-1.5">
                     <div 
                       className={`${stat.color} h-1.5 rounded-full`} 
-                      style={{ width: `${Math.min(100, (stat.value / 50) * 100)}%` }}
+                      style={{ width: `${Math.min(100, (stat.value / Math.max(clubInfo.membershipStats.total, 1)) * 100)}%` }}
                     ></div>
                   </div>
                 </div>
@@ -193,40 +253,28 @@ const LeaderDashboard: React.FC = () => {
         </div>
       </div>
 
-      {/* Recent Activity Summary */}
+      {/* Club Activity Summary */}
       <div className="mb-6">
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">Recent Activity</h3>
-          <div className="space-y-4">
-            <div className="flex items-center justify-between py-2 border-b border-gray-100">
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">Club Activity</h3>
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="flex items-center justify-between p-4 bg-blue-50 rounded-lg">
               <div className="flex items-center">
-                <div className="w-2 h-2 bg-green-500 rounded-full mr-3"></div>
+                <Calendar className="h-8 w-8 text-blue-600 mr-3" />
                 <div>
-                  <p className="text-sm text-gray-800">5 new members joined</p>
-                  <p className="text-xs text-gray-500">2 hours ago</p>
+                  <p className="text-sm text-gray-600">Total Events</p>
+                  <p className="text-2xl font-bold text-gray-800">{clubInfo._count.events}</p>
                 </div>
               </div>
-              <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">+5</span>
             </div>
-            <div className="flex items-center justify-between py-2 border-b border-gray-100">
+            <div className="flex items-center justify-between p-4 bg-purple-50 rounded-lg">
               <div className="flex items-center">
-                <div className="w-2 h-2 bg-blue-500 rounded-full mr-3"></div>
+                <Mail className="h-8 w-8 text-purple-600 mr-3" />
                 <div>
-                  <p className="text-sm text-gray-800">Club meeting scheduled for Friday</p>
-                  <p className="text-xs text-gray-500">Yesterday</p>
+                  <p className="text-sm text-gray-600">Announcements</p>
+                  <p className="text-2xl font-bold text-gray-800">{clubInfo._count.announcements}</p>
                 </div>
               </div>
-              <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">New</span>
-            </div>
-            <div className="flex items-center justify-between py-2">
-              <div className="flex items-center">
-                <div className="w-2 h-2 bg-yellow-500 rounded-full mr-3"></div>
-                <div>
-                  <p className="text-sm text-gray-800">3 pending requests to review</p>
-                  <p className="text-xs text-gray-500">2 days ago</p>
-                </div>
-              </div>
-              <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">Pending</span>
             </div>
           </div>
         </div>
