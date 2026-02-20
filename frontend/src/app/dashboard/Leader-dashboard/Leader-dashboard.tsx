@@ -73,10 +73,10 @@ const LeaderDashboard: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 -ml-6">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="border-b border-gray-200 -mx-6 -mt-8 mb-6">
+        <div className="px-6 py-6">
           <div className="flex justify-between items-center">
             <div>
               <h1 className="text-2xl font-bold text-gray-800">Leader Dashboard</h1>
@@ -91,7 +91,7 @@ const LeaderDashboard: React.FC = () => {
       </div>
 
       {/* 🏷️ Club Overview Section */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="mb-6">
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <div className="flex items-start justify-between mb-4">
             <div className="flex items-center">
@@ -160,7 +160,7 @@ const LeaderDashboard: React.FC = () => {
       </div>
 
       {/* 👥 Member Statistics Cards */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="mb-6">
         <h2 className="text-lg font-semibold text-gray-800 mb-4">Member Statistics</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {stats.map((stat, index) => {
@@ -194,7 +194,7 @@ const LeaderDashboard: React.FC = () => {
       </div>
 
       {/* Recent Activity Summary */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="mb-6">
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <h3 className="text-lg font-semibold text-gray-800 mb-4">Recent Activity</h3>
           <div className="space-y-4">
