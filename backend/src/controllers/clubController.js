@@ -214,6 +214,87 @@ const deleteClub = async (req, res, next) => {
     }
 };
 
+// Update club leader (Admin only)
+const updateClubLeader = async (req, res, next) => {
+    try {
+        const { leaderId } = req.body;
+
+        if (!leaderId) {
+            throw ApiError.badRequest('Leader ID is required');
+        }
+
+        // Check if the new leader exists and has appropriate role
+        const newLeader = await prisma.user.findUnique({
+            where: { id: leaderId },
+        });
+
+        if (!newLeader) {
+            throw ApiError.notFound('User not found');
+        }
+
+        // Update user role to CLUB_LEADER if they're a MEMBER
+        if (newLeader.role === 'MEMBER') {
+            await prisma.user.update({
+                where: { id: leaderId },
+                data: { role: 'CLUB_LEADER' },
+            });
+        }
+
+        // Update the club leader
+        const club = await prisma.club.update({
+            where: { id: req.params.id },
+            data: { leaderId },
+            include: {
+                leader: {
+                    select: { id: true, firstName: true, lastName: true, email: true },
+                },
+            },
+        });
+
+        // Ensure the new leader has approved membership
+        const existingMembership = await prisma.membership.findUnique({
+            where: {
+                userId_clubId: {
+                    userId: leaderId,
+                    clubId: req.params.id,
+                },
+            },
+        });
+
+        if (!existingMembership) {
+            await prisma.membership.create({
+                data: {
+                    userId: leaderId,
+                    clubId: req.params.id,
+                    status: 'APPROVED',
+                    joinedAt: new Date(),
+                },
+            });
+        } else if (existingMembership.status !== 'APPROVED') {
+            await prisma.membership.update({
+                where: {
+                    userId_clubId: {
+                        userId: leaderId,
+                        clubId: req.params.id,
+                    },
+                },
+                data: {
+                    status: 'APPROVED',
+                    joinedAt: new Date(),
+                },
+            });
+        }
+
+        res.json({
+            success: true,
+            message: 'Club leader updated successfully',
+            data: club,
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 // Get club categories
 const getCategories = async (req, res, next) => {
     try {
@@ -276,6 +357,7 @@ module.exports = {
     updateClub,
     updateClubStatus,
     deleteClub,
+    updateClubLeader,
     getCategories,
     getClubMembers,
 };
