@@ -39,6 +39,7 @@ export default function AdminUsersPage() {
     const router = useRouter();
     const [users, setUsers] = useState<UserData[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string>('');
     const [search, setSearch] = useState('');
     const [roleFilter, setRoleFilter] = useState<string>('');
     const [page, setPage] = useState(1);
@@ -48,12 +49,20 @@ export default function AdminUsersPage() {
     });
 
     useEffect(() => {
-        fetchUsers();
-    }, [page, roleFilter]);
+        // Check if user is admin
+        if (user && user.role !== 'ADMIN') {
+            router.push('/dashboard');
+            return;
+        }
+        if (user) {
+            fetchUsers();
+        }
+    }, [page, roleFilter, user]);
 
     const fetchUsers = async () => {
         try {
             setIsLoading(true);
+            setError('');
             const params: any = { page, limit: 10 };
             if (search) params.search = search;
             if (roleFilter) params.role = roleFilter;
@@ -64,8 +73,13 @@ export default function AdminUsersPage() {
                 total: response.data.pagination.total,
                 pages: response.data.pagination.pages,
             });
-        } catch (error) {
+        } catch (error: any) {
             console.error('Failed to fetch users:', error);
+            if (error.response?.status === 403) {
+                setError('You do not have permission to view this page. Admin access required.');
+            } else {
+                setError('Failed to load users. Please try again.');
+            }
         } finally {
             setIsLoading(false);
         }
@@ -81,8 +95,9 @@ export default function AdminUsersPage() {
         try {
             await api.patch(`/users/${userId}/role`, { role: newRole });
             fetchUsers();
-        } catch (error) {
+        } catch (error: any) {
             console.error('Failed to update role:', error);
+            alert('Failed to update user role. Please try again.');
         }
     };
 
@@ -90,8 +105,9 @@ export default function AdminUsersPage() {
         try {
             await api.patch(`/users/${userId}/toggle-status`);
             fetchUsers();
-        } catch (error) {
+        } catch (error: any) {
             console.error('Failed to toggle status:', error);
+            alert('Failed to update user status. Please try again.');
         }
     };
 
@@ -173,7 +189,13 @@ export default function AdminUsersPage() {
                             </h2>
                         </div>
 
-                        {isLoading ? (
+                        {error ? (
+                            <div className="p-6">
+                                <div className="bg-red-50 border border-red-200 rounded-md p-4">
+                                    <p className="text-red-800">{error}</p>
+                                </div>
+                            </div>
+                        ) : isLoading ? (
                             <div className="flex justify-center py-12">
                                 <Loader2 className="h-8 w-8 animate-spin text-indigo-600" />
                             </div>
