@@ -7,6 +7,7 @@ const {
     updateClub,
     updateClubStatus,
     deleteClub,
+    updateClubLeader,
     getCategories,
     getClubMembers,
 } = require('../controllers/clubController');
@@ -23,6 +24,7 @@ router.use(authenticate);
 router.post('/', authorize('ADMIN', 'CLUB_LEADER', 'MEMBER'), createClub);
 router.put('/:id', isClubLeader, updateClub);
 router.patch('/:id/status', authorize('ADMIN'), updateClubStatus);
+router.patch('/:id/leader', authorize('ADMIN'), updateClubLeader);
 router.delete('/:id', authorize('ADMIN'), deleteClub);
 router.get('/:id/members', getClubMembers);
 
