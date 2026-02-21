@@ -1,0 +1,234 @@
+═══════════════════════════════════════════════════════════════
+  AAU CLUB MANAGEMENT SYSTEM - DEPLOYMENT CHECKLIST
+═══════════════════════════════════════════════════════════════
+
+📋 PRE-DEPLOYMENT SETUP
+═══════════════════════════════════════════════════════════════
+
+MongoDB Atlas Setup:
+  ☐ Created MongoDB Atlas account
+  ☐ Created cluster (free tier M0)
+  ☐ Created database user: habtebiruk13_db_user
+  ☐ Set password: @bura123
+  ☐ Added IP whitelist: 0.0.0.0/0 (Allow all)
+  ☐ Verified connection string:
+    mongodb+srv://habtebiruk13_db_user:@bura123@cluster0.i0zy09s.mongodb.net/aau-club-management?retryWrites=true&w=majority
+
+Vercel Account:
+  ☐ Created Vercel account
+  ☐ Connected GitHub/GitLab/Bitbucket account
+  ☐ Verified email
+
+Git Repository:
+  ☐ Code pushed to Git repository
+  ☐ Repository is accessible
+  ☐ Main branch is up to date
+
+═══════════════════════════════════════════════════════════════
+🗄️ LOCAL DATABASE SETUP
+═══════════════════════════════════════════════════════════════
+
+Backend Setup:
+  ☐ cd backend
+  ☐ npm install
+  ☐ npx prisma generate
+  ☐ npx prisma db push
+  ☐ node src/utils/seed.js
+  ☐ npm run dev (test locally)
+  ☐ Test API: http://localhost:5000/api/health
+
+Frontend Setup:
+  ☐ cd frontend
+  ☐ npm install
+  ☐ Update .env.local with: NEXT_PUBLIC_API_URL=http://localhost:5000/api
+  ☐ npm run dev (test locally)
+  ☐ Test app: http://localhost:3000
+
+Local Testing:
+  ☐ Can register new user
+  ☐ Can login
+  ☐ Can browse clubs
+  ☐ Can join club
+  ☐ Leader dashboard works
+  ☐ Admin dashboard works
+
+═══════════════════════════════════════════════════════════════
+🚀 BACKEND DEPLOYMENT (Vercel)
+═══════════════════════════════════════════════════════════════
+
+Vercel Project Setup:
+  ☐ Go to vercel.com/new
+  ☐ Click "Import Project"
+  ☐ Select your Git repository
+  ☐ Click "Import"
+
+Backend Configuration:
+  ☐ Set Root Directory: backend
+  ☐ Set Framework Preset: Other
+  ☐ Set Build Command: npm run vercel-build
+  ☐ Set Install Command: npm install
+  ☐ Leave Output Directory empty
+
+Environment Variables (Add these in Vercel):
+  ☐ DATABASE_URL=mongodb+srv://habtebiruk13_db_user:@bura123@cluster0.i0zy09s.mongodb.net/aau-club-management?retryWrites=true&w=majority
+  ☐ JWT_SECRET=aau-club-jwt-secret-key-2026
+  ☐ JWT_REFRESH_SECRET=aau-club-refresh-secret-key-2026
+  ☐ JWT_EXPIRES_IN=15m
+  ☐ JWT_REFRESH_EXPIRES_IN=7d
+  ☐ FRONTEND_URL=http://localhost:3000 (update later)
+  ☐ NODE_ENV=production
+
+Deploy Backend:
+  ☐ Click "Deploy"
+  ☐ Wait for deployment to complete
+  ☐ Check deployment logs for errors
+  ☐ Copy backend URL: _______________________________
+  ☐ Test health endpoint: https://your-backend.vercel.app/api/health
+
+═══════════════════════════════════════════════════════════════
+🎨 FRONTEND DEPLOYMENT (Vercel)
+═══════════════════════════════════════════════════════════════
+
+Update Frontend Config:
+  ☐ Edit frontend/.env.production
+  ☐ Set NEXT_PUBLIC_API_URL=https://your-backend.vercel.app/api
+
+Vercel Project Setup:
+  ☐ Go to vercel.com/new
+  ☐ Click "Import Project"
+  ☐ Select your Git repository (or add new project)
+  ☐ Click "Import"
+
+Frontend Configuration:
+  ☐ Set Root Directory: frontend
+  ☐ Set Framework Preset: Next.js
+  ☐ Set Build Command: npm run build
+  ☐ Set Install Command: npm install
+  ☐ Output Directory: .next (auto-detected)
+
+Environment Variables:
+  ☐ NEXT_PUBLIC_API_URL=https://your-backend.vercel.app/api
+
+Deploy Frontend:
+  ☐ Click "Deploy"
+  ☐ Wait for deployment to complete
+  ☐ Check deployment logs for errors
+  ☐ Copy frontend URL: _______________________________
+  ☐ Test homepage: https://your-frontend.vercel.app
+
+═══════════════════════════════════════════════════════════════
+🔄 UPDATE CORS SETTINGS
+═══════════════════════════════════════════════════════════════
+
+Update Backend:
+  ☐ Go to Vercel Dashboard
+  ☐ Select backend project
+  ☐ Go to Settings → Environment Variables
+  ☐ Update FRONTEND_URL=https://your-frontend.vercel.app
+  ☐ Go to Deployments
+  ☐ Click three dots on latest deployment
+  ☐ Click "Redeploy"
+  ☐ Wait for redeployment to complete
+
+═══════════════════════════════════════════════════════════════
+✅ POST-DEPLOYMENT TESTING
+═══════════════════════════════════════════════════════════════
+
+Basic Functionality:
+  ☐ Frontend loads without errors
+  ☐ Backend API responds
+  ☐ No CORS errors in browser console
+
+User Registration:
+  ☐ Can access registration page
+  ☐ Can create new account
+  ☐ Receives success message
+  ☐ Redirected to login
+
+User Login:
+  ☐ Can access login page
+  ☐ Can login with test credentials
+  ☐ Redirected to dashboard
+  ☐ Token stored in localStorage
+
+Club Features:
+  ☐ Can browse clubs
+  ☐ Can search clubs
+  ☐ Can filter by category
+  ☐ Can view club details
+  ☐ Can join club
+  ☐ Can leave club
+  ☐ Can cancel pending request
+
+Leader Dashboard (admin6@aau.edu.et / Leader@123):
+  ☐ Can access leader dashboard
+  ☐ Can view club statistics
+  ☐ Can view pending requests
+  ☐ Can approve membership requests
+  ☐ Can reject membership requests
+  ☐ Statistics update correctly
+
+Admin Dashboard (admin@aau.edu.et / Admin@123):
+  ☐ Can access admin dashboard
+  ☐ Can view all clubs
+  ☐ Can view all users
+  ☐ Can manage clubs
+  ☐ Can manage users
+  ☐ Can assign club leaders
+
+═══════════════════════════════════════════════════════════════
+🔍 VERIFICATION
+═══════════════════════════════════════════════════════════════
+
+URLs to Save:
+  Backend API: _______________________________
+  Frontend App: _______________________________
+  MongoDB Atlas: https://cloud.mongodb.com
+
+Credentials to Remember:
+  MongoDB User: habtebiruk13_db_user
+  MongoDB Password: @bura123
+  
+  Admin Email: admin@aau.edu.et
+  Admin Password: Admin@123
+  
+  Leader Email: admin6@aau.edu.et
+  Leader Password: Leader@123
+
+Final Checks:
+  ☐ All environment variables set correctly
+  ☐ CORS configured properly
+  ☐ Database seeded with test data
+  ☐ All features working
+  ☐ No errors in browser console
+  ☐ No errors in Vercel logs
+  ☐ MongoDB Atlas shows active connections
+
+═══════════════════════════════════════════════════════════════
+📝 NOTES & ISSUES
+═══════════════════════════════════════════════════════════════
+
+Write any issues or notes here:
+
+_________________________________________________________________
+
+_________________________________________________________________
+
+_________________________________________________________________
+
+_________________________________________________________________
+
+═══════════════════════════════════════════════════════════════
+🎉 DEPLOYMENT COMPLETE!
+═══════════════════════════════════════════════════════════════
+
+Congratulations! Your AAU Club Management System is now live!
+
+Next Steps:
+  ☐ Share URLs with team
+  ☐ Set up monitoring
+  ☐ Configure custom domain (optional)
+  ☐ Enable MongoDB Atlas backups
+  ☐ Set up error tracking (optional)
+
+═══════════════════════════════════════════════════════════════
