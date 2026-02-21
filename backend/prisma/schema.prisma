@@ -3,12 +3,12 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
 }
 
 model User {
-  id             String   @id @default(cuid())
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
   email          String   @unique
   password       String
   firstName      String
@@ -18,13 +18,13 @@ model User {
   avatar         String?
   bio            String?
   role           String   @default("MEMBER") // ADMIN, CLUB_LEADER, MEMBER
-  clubId         String?  // For CLUB_LEADER role
+  clubId         String?  @db.ObjectId
   isActive       Boolean  @default(true)
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
   // Relations
-  assignedClub   Club?            @relation("AssignedClubLeader", fields: [clubId], references: [id])
+  assignedClub   Club?            @relation("AssignedClubLeader", fields: [clubId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   memberships    Membership[]
   rsvps          RSVP[]
   notifications  Notification[]
@@ -40,7 +40,7 @@ model User {
 }
 
 model Club {
-  id          String     @id @default(cuid())
+  id          String     @id @default(auto()) @map("_id") @db.ObjectId
   name        String     @unique
   description String
   category    String
@@ -50,7 +50,7 @@ model Club {
   meetingDay  String?
   meetingTime String?
   location    String?
-  leaderId    String
+  leaderId    String     @db.ObjectId
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
 
@@ -67,11 +67,11 @@ model Club {
 }
 
 model Membership {
-  id        String    @id @default(cuid())
-  userId    String
-  clubId    String
-  status    String    @default("APPROVED") // APPROVED, ACTIVE
-  joinedAt  DateTime  @default(now())
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String    @db.ObjectId
+  clubId    String    @db.ObjectId
+  status    String    @default("APPROVED") // APPROVED, PENDING, REJECTED
+  joinedAt  DateTime?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 
@@ -84,9 +84,9 @@ model Membership {
 }
 
 model MembershipRequest {
-  id        String   @id @default(cuid())
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
   userId    String
-  clubId    String
+  clubId    String   @db.ObjectId
   status    String   @default("PENDING") // PENDING, APPROVED, REJECTED
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -99,7 +99,7 @@ model MembershipRequest {
 }
 
 model Event {
-  id          String   @id @default(cuid())
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
   title       String
   description String
   date        DateTime
@@ -109,8 +109,8 @@ model Event {
   image       String?
   capacity    Int?
   isPublic    Boolean  @default(true)
-  clubId      String
-  creatorId   String
+  clubId      String   @db.ObjectId
+  creatorId   String   @db.ObjectId
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -123,10 +123,10 @@ model Event {
 }
 
 model RSVP {
-  id        String     @id @default(cuid())
-  userId    String
-  eventId   String
-  status    String     @default("GOING") // SQLite enum support
+  id        String     @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String     @db.ObjectId
+  eventId   String     @db.ObjectId
+  status    String     @default("GOING") // GOING, MAYBE, NOT_GOING
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
 
@@ -139,12 +139,12 @@ model RSVP {
 }
 
 model Announcement {
-  id        String   @id @default(cuid())
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
   title     String
   content   String
   priority  String   @default("normal") // low, normal, high, urgent
-  clubId    String
-  authorId  String
+  clubId    String   @db.ObjectId
+  authorId  String   @db.ObjectId
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -156,12 +156,12 @@ model Announcement {
 }
 
 model Notification {
-  id        String   @id @default(cuid())
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
   title     String
   message   String
   type      String   // event_reminder, announcement, membership, system
   isRead    Boolean  @default(false)
-  userId    String
+  userId    String   @db.ObjectId
   link      String?
   createdAt DateTime @default(now())
 
@@ -172,11 +172,11 @@ model Notification {
 }
 
 model Message {
-  id         String   @id @default(cuid())
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
   content    String
-  senderId   String
-  receiverId String
-  clubId     String?
+  senderId   String   @db.ObjectId
+  receiverId String   @db.ObjectId
+  clubId     String?  @db.ObjectId
   isRead     Boolean  @default(false)
   createdAt  DateTime @default(now())
 
@@ -189,8 +189,8 @@ model Message {
 }
 
 model RefreshToken {
-  id        String   @id @default(cuid())
-  userId    String
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
   token     String   @unique
   expiresAt DateTime
   createdAt DateTime @default(now())
@@ -202,10 +202,10 @@ model RefreshToken {
 }
 
 model ActivityLog {
-  id        String   @id @default(cuid())
-  userId    String
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
   action    String
-  details   String   // JSON string for SQLite
+  details   String   // JSON string
   timestamp DateTime @default(now())
 
   // Relations

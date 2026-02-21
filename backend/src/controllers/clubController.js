@@ -350,6 +350,62 @@ const getClubMembers = async (req, res, next) => {
     }
 };
 
+// Get clubs where current user is leader
+const getMyLeaderClubs = async (req, res, next) => {
+    try {
+        const clubs = await prisma.club.findMany({
+            where: { leaderId: req.user.id },
+            include: {
+                leader: {
+                    select: { id: true, firstName: true, lastName: true, email: true, avatar: true },
+                },
+                _count: {
+                    select: {
+                        memberships: true,
+                        events: true,
+                        announcements: true,
+                    },
+                },
+            },
+            orderBy: { createdAt: 'desc' },
+        });
+
+        // Get detailed membership stats for each club
+        const clubsWithStats = await Promise.all(
+            clubs.map(async (club) => {
+                const [approvedCount, pendingCount, rejectedCount] = await Promise.all([
+                    prisma.membership.count({
+                        where: { clubId: club.id, status: 'APPROVED' },
+                    }),
+                    prisma.membership.count({
+                        where: { clubId: club.id, status: 'PENDING' },
+                    }),
+                    prisma.membership.count({
+                        where: { clubId: club.id, status: 'REJECTED' },
+                    }),
+                ]);
+
+                return {
+                    ...club,
+                    membershipStats: {
+                        approved: approvedCount,
+                        pending: pendingCount,
+                        rejected: rejectedCount,
+                        total: club._count.memberships,
+                    },
+                };
+            })
+        );
+
+        res.json({
+            success: true,
+            data: clubsWithStats,
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
     getAllClubs,
     getClubById,
@@ -360,4 +416,5 @@ module.exports = {
     updateClubLeader,
     getCategories,
     getClubMembers,
+    getMyLeaderClubs,
 };

@@ -5,6 +5,7 @@ import {
   Users, UserPlus, UserCheck, UserX, Calendar, 
   Info, Edit2, Mail, Award, TrendingUp, AlertCircle
 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import api from '@/lib/axios';
 import { useAuth } from '@/hooks/useAuth';
 
@@ -35,6 +36,7 @@ interface ClubInfo {
 
 const LeaderDashboard: React.FC = () => {
   const { user } = useAuth();
+  const router = useRouter();
   const [clubInfo, setClubInfo] = useState<ClubInfo | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -95,7 +97,8 @@ const LeaderDashboard: React.FC = () => {
       icon: Users,
       color: 'bg-blue-500',
       bgColor: 'bg-blue-50',
-      textColor: 'text-blue-600'
+      textColor: 'text-blue-600',
+      clickable: false
     },
     { 
       label: 'Pending Requests', 
@@ -103,7 +106,9 @@ const LeaderDashboard: React.FC = () => {
       icon: UserPlus,
       color: 'bg-yellow-500',
       bgColor: 'bg-yellow-50',
-      textColor: 'text-yellow-600'
+      textColor: 'text-yellow-600',
+      clickable: true,
+      onClick: () => router.push('/dashboard/leader/requests')
     },
     { 
       label: 'Approved Members', 
@@ -111,7 +116,8 @@ const LeaderDashboard: React.FC = () => {
       icon: UserCheck,
       color: 'bg-green-500',
       bgColor: 'bg-green-50',
-      textColor: 'text-green-600'
+      textColor: 'text-green-600',
+      clickable: false
     },
     { 
       label: 'Rejected Requests', 
@@ -119,7 +125,8 @@ const LeaderDashboard: React.FC = () => {
       icon: UserX,
       color: 'bg-red-500',
       bgColor: 'bg-red-50',
-      textColor: 'text-red-600'
+      textColor: 'text-red-600',
+      clickable: false
     },
   ];
 
@@ -225,8 +232,15 @@ const LeaderDashboard: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {stats.map((stat, index) => {
             const Icon = stat.icon;
+            const CardWrapper = stat.clickable ? 'button' : 'div';
             return (
-              <div key={index} className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+              <CardWrapper
+                key={index}
+                onClick={stat.clickable ? stat.onClick : undefined}
+                className={`bg-white rounded-xl shadow-sm border border-gray-200 p-6 transition-shadow text-left w-full ${
+                  stat.clickable ? 'hover:shadow-lg hover:border-yellow-300 cursor-pointer transform hover:scale-105 transition-all' : 'hover:shadow-md'
+                }`}
+              >
                 <div className="flex items-center justify-between mb-4">
                   <div className={`p-2 ${stat.bgColor} rounded-lg`}>
                     <Icon className={`h-6 w-6 ${stat.textColor}`} />
@@ -247,7 +261,12 @@ const LeaderDashboard: React.FC = () => {
                     ></div>
                   </div>
                 </div>
-              </div>
+                {stat.clickable && stat.value > 0 && (
+                  <div className="mt-3 text-xs text-yellow-600 font-medium">
+                    Click to review →
+                  </div>
+                )}
+              </CardWrapper>
             );
           })}
         </div>

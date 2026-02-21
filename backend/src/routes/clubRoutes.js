@@ -10,17 +10,19 @@ const {
     updateClubLeader,
     getCategories,
     getClubMembers,
+    getMyLeaderClubs,
 } = require('../controllers/clubController');
 const { authenticate, authorize, isClubLeader } = require('../middleware/auth');
 
 // Public routes
 router.get('/', getAllClubs);
 router.get('/categories', getCategories);
-router.get('/:id', getClubById);
 
 // Protected routes
 router.use(authenticate);
 
+router.get('/my/leader', authorize('CLUB_LEADER', 'ADMIN'), getMyLeaderClubs);
+router.get('/:id', getClubById);
 router.post('/', authorize('ADMIN', 'CLUB_LEADER', 'MEMBER'), createClub);
 router.put('/:id', isClubLeader, updateClub);
 router.patch('/:id/status', authorize('ADMIN'), updateClubStatus);

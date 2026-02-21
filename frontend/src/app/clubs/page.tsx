@@ -45,15 +45,36 @@ export default function ClubsDirectoryPage() {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const [clubsRes, membershipsRes, categoriesRes] = await Promise.all([
-        api.get('/clubs'),
-        user ? api.get('/memberships/my-memberships') : Promise.resolve({ data: { data: [] } }),
-        api.get('/clubs/categories')
-      ]);
+      
+      // Fetch clubs
+      let clubsData = [];
+      try {
+        const clubsRes = await api.get('/clubs', { params: { status: 'ACTIVE', limit: 100 } });
+        clubsData = clubsRes.data.data;
+      } catch (clubError) {
+        console.error("Failed to fetch clubs:", clubError);
+        alert("Failed to load clubs. Please refresh the page.");
+      }
 
-      const fetchedClubs = clubsRes.data.data;
-      const myMemberships = membershipsRes.data.data as Membership[];
-      const fetchedCategories = ['All', ...categoriesRes.data.data];
+      // Fetch memberships
+      let myMemberships: Membership[] = [];
+      if (user) {
+        try {
+          const membershipsRes = await api.get('/memberships/my-memberships');
+          myMemberships = membershipsRes.data.data;
+        } catch (membershipError) {
+          console.error("Failed to fetch memberships:", membershipError);
+        }
+      }
+
+      // Fetch categories
+      let fetchedCategories = ['All'];
+      try {
+        const categoriesRes = await api.get('/clubs/categories');
+        fetchedCategories = ['All', ...categoriesRes.data.data];
+      } catch (categoryError) {
+        console.error("Failed to fetch categories:", categoryError);
+      }
 
       // Map memberships for easy lookup
       const membershipMap = new Map<string, string>();
@@ -62,7 +83,7 @@ export default function ClubsDirectoryPage() {
       });
 
       // Merge data
-      const processedClubs = fetchedClubs.map((club: any) => ({
+      const processedClubs = clubsData.map((club: any) => ({
         ...club,
         members: club._count?.memberships || 0,
         isJoined: membershipMap.has(club.id) && membershipMap.get(club.id) === 'APPROVED',
@@ -71,8 +92,8 @@ export default function ClubsDirectoryPage() {
 
       setClubs(processedClubs);
       setCategories(fetchedCategories);
-    } catch (error) {
-      console.error("Failed to fetch data:", error);
+    } catch (error: any) {
+      console.error("Unexpected error:", error);
     } finally {
       setLoading(false);
     }
@@ -94,9 +115,21 @@ export default function ClubsDirectoryPage() {
         }
         return club;
       }));
-    } catch (error) {
+      
+      alert("Membership request submitted successfully! The club leader will review your request.");
+    } catch (error: any) {
       console.error("Failed to join club:", error);
-      alert("Failed to join club. Please try again.");
+      
+      // Handle specific error messages
+      if (error.response?.status === 409) {
+        const message = error.response?.data?.message || "You already have a membership request for this club";
+        alert(message);
+        
+        // Refresh data to sync state
+        fetchData();
+      } else {
+        alert(error.response?.data?.message || "Failed to join club. Please try again.");
+      }
     } finally {
       setActionLoading(null);
     }
@@ -116,9 +149,35 @@ export default function ClubsDirectoryPage() {
         }
         return club;
       }));
+      
+      alert("You have successfully left the club.");
     } catch (error: any) {
       console.error("Failed to leave club:", error);
-      alert(error.response?.data?.message || "Failed to leave club");
+      alert(error.response?.data?.message || "Failed to leave club. Please try again.");
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const handleCancelRequest = async (clubId: string) => {
+    if (!confirm("Are you sure you want to cancel your membership request?")) return;
+
+    try {
+      setActionLoading(clubId);
+      await api.delete(`/memberships/leave/${clubId}`);
+
+      // Update local state
+      setClubs(prev => prev.map(club => {
+        if (club.id === clubId) {
+          return { ...club, membershipStatus: null };
+        }
+        return club;
+      }));
+      
+      alert("Your membership request has been cancelled.");
+    } catch (error: any) {
+      console.error("Failed to cancel request:", error);
+      alert(error.response?.data?.message || "Failed to cancel request. Please try again.");
     } finally {
       setActionLoading(null);
     }
@@ -154,10 +213,10 @@ export default function ClubsDirectoryPage() {
     if (club.membershipStatus === 'PENDING') {
       return (
         <button
-          disabled
-          className="w-full py-2 px-4 rounded-lg font-medium transition-colors bg-orange-100 text-orange-800 cursor-not-allowed"
+          onClick={() => handleCancelRequest(club.id)}
+          className="w-full py-2 px-4 rounded-lg font-medium transition-colors bg-orange-50 text-orange-700 hover:bg-orange-100"
         >
-          Request Pending
+          Cancel Request
         </button>
       );
     }
