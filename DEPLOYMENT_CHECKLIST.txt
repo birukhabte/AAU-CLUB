@@ -14,7 +14,7 @@ MongoDB Atlas Setup:
   ☐ Verified connection string:
     mongodb+srv://habtebiruk13_db_user:@bura123@cluster0.i0zy09s.mongodb.net/aau-club-management?retryWrites=true&w=majority
 
-Vercel Account:
+Vercel Account: 
   ☐ Created Vercel account
   ☐ Connected GitHub/GitLab/Bitbucket account
   ☐ Verified email
