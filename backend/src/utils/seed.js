@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs');
 const prisma = require('../config/database');
+require('dotenv').config();
 
 const seed = async () => {
     console.log('🌱 Seeding database...');
@@ -16,14 +17,15 @@ const seed = async () => {
         await prisma.user.deleteMany();
 
         const hashedPassword = await bcrypt.hash('Password123', 12);
+        const adminPassword = await bcrypt.hash(process.env.ADMIN_PASSWORD || 'Admin@123', 12);
 
-        // Create primary Admin
+        // Create primary Admin (from .env)
         const admin = await prisma.user.create({
             data: {
-                email: 'admin@aau.edu.et',
-                password: hashedPassword,
-                firstName: 'System',
-                lastName: 'Admin',
+                email: process.env.ADMIN_EMAIL || 'admin@aau.edu.et',
+                password: adminPassword,
+                firstName: process.env.ADMIN_FIRST_NAME || 'Super',
+                lastName: process.env.ADMIN_LAST_NAME || 'Admin',
                 studentId: 'ADM001',
                 role: 'ADMIN',
                 bio: 'System Administrator of AAU Club Management System',
@@ -318,7 +320,7 @@ const seed = async () => {
         }
 
         console.log('✅ Database seeded successfully!');
-        console.log(`   👑 Admin 1: admin@aau.edu.et / Password123`);
+        console.log(`   👑 Admin: ${process.env.ADMIN_EMAIL || 'admin@aau.edu.et'} / ${process.env.ADMIN_PASSWORD || 'Admin@123'}`);
         console.log(`   👑 Admin 2: admin2@aau.edu.et / Password123`);
         console.log(`   👤 Leader 1: abebe.kebede@aau.edu.et / Password123`);
         console.log(`   👤 Leader 2: tigist.hailu@aau.edu.et / Password123`);
